@@ -1,22 +1,35 @@
-// Load environment variables from .env file
+const express = require("express");
 require("dotenv").config();
+const { getUsers, getGeocode } = require("./database/supabase");
 
-// Check database connection
-// Note: This is optional and can be removed if the database connection
-// is not required when starting the application
-require("./database/client").checkConnection();
 
-// Import the Express application from app/config.js
-const app = require("./app/config");
-
-// Get the port from the environment variables
+const app = express();
 const port = process.env.APP_PORT;
 
-// Start the server and listen on the specified port
-app
-  .listen(port, () => {
-    console.info(`Server is listening on port ${port}`);
-  })
-  .on("error", (err) => {
-    console.error("Error:", err.message);
-  });
+app.use(express.json());
+
+app.get("/api/users", async (_, response) => {
+  try {
+    const [ userResult,geocodeResult ] = await Promise.all([ getUsers(), getGeocode() ]);
+    const { data: userData, error: userError } = userResult;
+    const { data: geocodeData, error: geocodeError } = geocodeResult;
+
+    if(userError || geocodeError) {
+      return response.status(500).json({
+      userError: userError ? userError.message : null,
+      geocodeError: geocodeError ? geocodeError.message : null,
+      });
+    }
+
+    return response.json({
+    users: userData,
+    geocode: geocodeData,
+    });
+  } catch (error) {
+    return response.status(500).json({ error: error.message });
+  }
+});
+
+app.listen(port, () => {
+  console.info(`Server running at http://localhost:${port}`);
+});
