@@ -1,7 +1,7 @@
-import Background from "./images/background.jpg";
-import BarLateral from "./images/barLateral.png";
-import Logo from "./images/Logo.png";
-import Position from "./images/position.png";
-import Station from "./images/station.png";
+import background from "./images/bg.jpg";
+import bar from "./images/bar.jpg";
+import logo from "./images/logo.png";
+import position from "./images/position.jpg";
+import station from "./images/station.jpg";
 
-export { Background, BarLateral, Logo, Position, Station };
+export { background, bar, logo, position, station };
