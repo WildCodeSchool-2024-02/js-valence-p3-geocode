@@ -15,7 +15,7 @@ export default function Home() {
       </div>
       <div className="absolute inset-0 flex flex-col items-start justify-end">
         <div className="mb-20 ml-24 text-white">
-          <h2 className="flex items-center gap-8 text-[36px] mb-4">
+          <h2 className="flex items-center gap-8 text-[#21A89A] text-[36px] mb-4">
             <img src={position} alt="position" className="w-8 h-8" />
             {localisation[0].partA}
             <img src={bar} alt="bar lateral" className="h-8" />
@@ -28,27 +28,30 @@ export default function Home() {
             {slogan[0].partB}
           </h1>
         </div>
-        <div className="text-white absolute right-24 flex flex-col items-end h-[300px] w-[400px] bg-[#1E1F24] rounded-t-lg">
-          <h1 className="text-left py-4 h-full w-full">
+        <div className="text-white absolute right-24 flex flex-col items-center h-[300px] w-[300px] bg-[#1E1F24] rounded-t-lg p-4">
+          <h1 className="w-full mb-4 text-lg text-center border border-[#444] rounded py-1 ">
             Reserve your Terminal
           </h1>
-          <div>
-            <h2>Choose your date :</h2>
+          <div className="w-full mb-4">
+            <h2 className="mb-2 text-sm">Date :</h2>
             <DatePicker />
           </div>
-          <div>
-            <div>
-              <h2>Check In</h2>
+          <div className="flex w-full gap-20 pl-5 mb-10">
+            <div className="flex flex-col items-center">
+              <h2 className="mb-2 text-sm">Check In</h2>
               <TimePicker />
             </div>
-            <div>
-              <h2>Check Out</h2>
-              <TimePicker />
+            <div className="flex flex-col items-center">
+              <h2 className="mb-2 text-sm">Check Out</h2>
+              <TimePicker/>
             </div>
           </div>
-          <div>
-            <button type="button" className='bg-green-500'> Charge Now ! </button>
-          </div>
+          <button
+            type="button"
+            className="px-4 py-2 text-black bg-[#7CD858] rounded font-semibold	"
+          >
+            Charge Now !
+          </button>
         </div>
       </div>
     </div>
