@@ -48,7 +48,7 @@ export default function Home() {
           </div>
           <button
             type="button"
-            className="px-4 py-2 text-black bg-[#7CD858] rounded font-semibold	"
+            className="px-4 py-2 text-black bg-[#7CD858] rounded font-semibold"
           >
             Charge Now !
           </button>
