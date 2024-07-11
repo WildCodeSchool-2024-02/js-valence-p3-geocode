@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { localisation, slogan } from "../constant/LandingPageConstant";
 import { background, bar, position, station } from "../assets/index";
 import { DatePicker, TimePicker } from "../components/index";
 
 export default function Home() {
+  const navigate = useNavigate();
   return (
     <div className="relative h-screen overflow-hidden">
       <div>
@@ -43,7 +45,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col items-center">
               <h2 className="mb-2 text-sm">Check Out</h2>
-              <TimePicker/>
+              <TimePicker />
             </div>
           </div>
           <button
@@ -53,6 +55,15 @@ export default function Home() {
             Charge Now !
           </button>
         </div>
+      </div>
+      <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
+        <button
+          type="button"
+          className="text-white p-6"
+          onClick={() => navigate("/map")}
+        >
+          &rarr;
+        </button>
       </div>
     </div>
   );

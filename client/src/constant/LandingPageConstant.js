@@ -15,6 +15,10 @@ export const navLinks = [
     id: "register",
     title: "Register",
   },
+  {
+    id: "map",
+    title: "Map",
+  },
 ];
 
 export const localisation = [

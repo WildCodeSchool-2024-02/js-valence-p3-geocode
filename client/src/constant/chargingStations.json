@@ -1,0 +1,26 @@
+[
+  {
+    "n_station": "Parking Quintaou",
+    "Adresse": "1 allée de Quintaou",
+    "Ville": "Anglet",
+    "geo_point_borne": "43.48396450961844,-1.5127680638813583"
+  },
+  {
+    "n_station": "Parking des Dauphins",
+    "Adresse": "Place des Docteurs Gentilhe",
+    "Ville": "Anglet",
+    "geo_point_borne": "43.49989725773917,-1.5124430186266826"
+  },
+  {
+    "n_station": "Parking Izadia",
+    "Adresse": "25 allée du Val Fleuri",
+    "Ville": "Anglet",
+    "geo_point_borne": "43.48207100351876,-1.5155546844999312"
+  },
+  {
+    "n_station": "ABVV Volvo St Ouen l'Aumône",
+    "Adresse": "135 Rue de Paris 95310 Saint-Ouen-l'Aumône",
+    "Ville": "",
+    "geo_point_borne": "49.035994,2.12245"
+  }
+]

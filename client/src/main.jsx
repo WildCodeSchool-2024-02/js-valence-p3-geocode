@@ -3,8 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
-
-
+import Map from "./pages/Map";
 
 import App from "./App";
 
@@ -15,11 +14,15 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />
+        element: <Home />,
       },
       {
         path: "contact",
         element: <Contact />,
+      },
+      {
+        path: "map",
+        element: <Map />,
       },
     ],
   },
