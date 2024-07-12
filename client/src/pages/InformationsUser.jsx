@@ -2,7 +2,7 @@ import { FaEdit } from "react-icons/fa"; // If you're using react-icons
 
 function InformationsUser() {
   return (
-    <div className="bg-gray-800 rounded-lg p-9 space-y-9 flex flex-col justify-center items-center min-h-full">
+    <div className="bg-gray-800 rounded-xl p-9 space-y-9 flex flex-col justify-center items-center min-h-full">
       <h2 className="text-xl font-bold text-white">Information Dashboard</h2>
       <div className="grid grid-cols-2 gap-14 w-full max-w-5xl">
         <div className="flex flex-col items-center">
