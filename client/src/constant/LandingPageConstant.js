@@ -12,6 +12,10 @@ export const navLinks = [
     title: "Contact",
   },
   {
+    id: "Map",
+    title: "Map",
+  },
+  {
     id: "LogIn",
     title: "Login",
   },

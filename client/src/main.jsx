@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import LogIn from "./pages/LogIn";
 import Information from "./pages/Information";
 import News from "./pages/News";
+import Map from "./pages/Map";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: "news",
         element: <News />,
+      },
+      {
+        path: "map",
+        element: <Map />,
       },
     ],
   },
