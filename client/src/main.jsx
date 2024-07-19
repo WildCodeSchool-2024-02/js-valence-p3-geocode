@@ -3,14 +3,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
-import LogIn from "./components/LogIn";
-
-
 
 import App from "./App";
-import Register from "./components/Register";
-import Sign from "./pages/Sign";
-import RecoveryPassword from "./components/RecoveryPassword";
+import Register from "./pages/Register";
+import LogIn from "./pages/LogIn";
+import Information from "./pages/Information";
+import News from "./pages/News";
 
 const router = createBrowserRouter([
   {
@@ -26,13 +24,21 @@ const router = createBrowserRouter([
         element: <Contact />,
       },
       {
-        path: "sign",
-        element: <Sign />
+        path: "register",
+        element: <Register />
       },
       {
-        path: "recov",
-        element: <RecoveryPassword />
+        path: "login",
+        element: <LogIn />
       },
+      {
+        path: "information",
+        element: <Information />
+      },
+      {
+        path: "news",
+        element: <News />
+      }
     ],
   },
 ]);

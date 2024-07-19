@@ -1,37 +1,17 @@
-const express = require("express");
-require("dotenv").config();
-const { getUsers, getGeocode } = require("./database/supabase");
+const express = require('express');
+const cors = require('cors');
 
 const app = express();
-const port = process.env.APP_PORT;
+const userRoutes = require('./routes/routes');
 
 app.use(express.json());
+app.use(cors({
+  origin: ['http://localhost:3310', 'http://localhost:3000'],
+}));
 
-app.get("/api/users", async (_, response) => {
-  try {
-    const [userResult, geocodeResult] = await Promise.all([
-      getUsers(),
-      getGeocode(),
-    ]);
-    const { data: userData, error: userError } = userResult;
-    const { data: geocodeData, error: geocodeError } = geocodeResult;
+app.use('/api', userRoutes);
 
-    if (userError || geocodeError) {
-      return response.status(500).json({
-        userError: userError ? userError.message : null,
-        geocodeError: geocodeError ? geocodeError.message : null,
-      });
-    }
-
-    return response.json({
-      users: userData,
-      geocode: geocodeData,
-    });
-  } catch (error) {
-    return response.status(500).json({ error: error.message });
-  }
-});
-
-app.listen(port, () => {
-  console.info(`Server running at http://localhost:${port}`);
+const PORT = process.env.PORT || 3310;
+app.listen(PORT, () => {
+  console.info(`Server running on port: http://localhost:${PORT}`);
 });
