@@ -1,9 +1,24 @@
 const express = require("express");
-require("dotenv").config();
-const { getUsers, getGeocode } = require("./database/supabase");
+const cors = require("cors");
+require("dotenv").config({ path: "./..env" });
+const {
+  getUsers,
+  getGeocode,
+  getStationsInformations,
+} = require("./database/supabase");
+const terminalsRoutes = require("./routes/router");
 
 const app = express();
 const port = process.env.APP_PORT;
+
+// Activer CORS pour toutes les routes
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
@@ -31,6 +46,26 @@ app.get("/api/users", async (_, response) => {
     return response.status(500).json({ error: error.message });
   }
 });
+
+app.get("/api/stations", async (req, res) => {
+  try {
+    const { north, south, east, west } = req.query;
+    const { data: stations, error } = await getStationsInformations(
+      north,
+      south,
+      east,
+      west
+    );
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    return res.json(stations);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+app.use("/api", terminalsRoutes);
 
 app.listen(port, () => {
   console.info(`Server running at http://localhost:${port}`);

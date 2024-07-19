@@ -1,177 +1,244 @@
-import { useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
-import { number } from "prop-types";
-import chargingStations from "../constant/chargingStations.json";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import { HiOutlineSearch } from "react-icons/hi";
+import { SiLocal } from "react-icons/si";
+import { TbScanPosition } from "react-icons/tb";
+import { IoClose } from "react-icons/io5";
+import "mapbox-gl/dist/mapbox-gl.css";
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import axios from "axios";
 
 mapboxgl.accessToken =
   "pk.eyJ1Ijoia2FsZWRndXptYW4iLCJhIjoiY2x5ZmpqZG9oMDA5bzJscjJmZDlyeGdwdCJ9.JeVpoEFj5YZvHxc9T017dA";
 
-const customMarkerIconURL =
-  "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png";
-
-export default function Map() {
+function Map() {
   const mapContainer = useRef(null);
-  const mapRef = useRef(null);
+  const map = useRef(null);
+  const geocoderContainer = useRef(null);
+  const markers = useRef([]);
+  const [selectedStation, setSelectedStation] = useState(null);
+  const [stations, setStations] = useState([]);
+  const [loadingLocation, setLoadingLocation] = useState(true);
+  const userLocation = useRef(null);
 
-  useEffect(() => {
-    const map = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/kaledguzman/clyfl3k6700se01nwd9wo7kvo",
-      center: [2.3522, 48.8566],
-      zoom: 12,
-      pitch: 45,
-      bearing: -17.6,
-      antialias: true,
-      animationMode: "flyTo",
-      animationDuration: 6000,
-    });
-
-    mapRef.current = map;
-
-    map.on("load", () => {
-      map.addSource("mapbox-dem", {
-        type: "raster-dem",
-        url: "mapbox://mapbox.mapbox-terrain-dem-v1",
-        tileSize: 512,
-        maxzoom: 14,
-      });
-      map.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 });
-
-      map.addLayer({
-        id: "sky",
-        type: "sky",
-        paint: {
-          "sky-type": "atmosphere",
-          "sky-atmosphere-sun": [0.0, 0.0],
-          "sky-atmosphere-sun-intensity": 15,
-        },
-      });
-
-      map.loadImage(customMarkerIconURL, (error, image) => {
-        if (error) throw error;
-        map.addImage("custom-marker", image);
-
-        map.addLayer({
-          id: "markers",
-          type: "symbol",
-          source: {
-            type: "geojson",
-            data: {
-              type: "FeatureCollection",
-              features: chargingStations.map((station) => ({
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: station.geo_point_borne
-                    .split(",")
-                    .map(Number)
-                    .reverse(),
-                },
-                properties: {
-                  title: station.n_station,
-                  description: `${station.Adresse}<br>${station.Ville}`,
-                },
-              })),
-            },
+  const fetchStations = async (bbox) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/stations`,
+        {
+          params: {
+            north: bbox[3],
+            south: bbox[1],
+            east: bbox[2],
+            west: bbox[0],
           },
-          layout: {
-            "icon-image": "custom-marker",
-            "icon-size": 0.5,
-            "text-field": ["get", "title"],
-            "text-offset": [0, 1.25],
-            "text-anchor": "top",
-          },
-        });
+        }
+      );
+      if (Array.isArray(response.data)) {
+        setStations(response.data);
+      } else {
+        console.error("Expected an array but got:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching stations:", error);
+    }
+  };
 
-        // Add popups
-        map.on("click", "markers", (e) => {
-          const coordinates = e.features[0].geometry.coordinates.slice();
-          const { title, description } = e.features[0].properties;
+  const addMarkers = () => {
+    markers.current.forEach((marker) => marker.remove());
+    markers.current = [];
 
-          new mapboxgl.Popup()
-            .setLngLat(coordinates)
-            .setHTML(`<h3>${title}</h3><p>${description}</p>`)
-            .addTo(map);
-        });
+    stations.forEach((station) => {
+      if (station.consolidated_longitude && station.consolidated_latitude) {
+        const longitude = Number(station.consolidated_longitude);
+        const latitude = Number(station.consolidated_latitude);
 
-        map.on("mouseenter", "markers", () => {
-          map.getCanvas().style.cursor = "pointer";
-        });
+        if (!Number.isNaN(longitude) && !Number.isNaN(latitude)) {
+          const marker = new mapboxgl.Marker()
+            .setLngLat([longitude, latitude])
+            .addTo(map.current);
 
-        map.on("mouseleave", "markers", () => {
-          map.getCanvas().style.cursor = "";
-        });
-      });
-    });
+          const markerElement = marker.getElement();
+          markerElement.addEventListener("click", () => {
+            setSelectedStation(station);
+          });
 
-    return () => map.remove();
-  }, []);
-
-  const flyToMarker = (longitude, latitude) => {
-    mapRef.current.flyTo({
-      center: [longitude, latitude],
-      zoom: 15,
-      bearing: 0,
-      speed: 2,
-      curve: 1,
-      easing: (t) => t,
+          markers.current.push(marker);
+        } else {
+          console.error("Skipping invalid coordinates for station:", station);
+        }
+      } else {
+        console.error("No coordinates found for station:", station);
+      }
     });
   };
 
+  const goToUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          userLocation.current = { latitude, longitude };
+          map.current.flyTo({
+            center: [longitude, latitude],
+            zoom: 14,
+            essential: true,
+          });
+
+          new mapboxgl.Marker({ color: "red" })
+            .setLngLat([longitude, latitude])
+            .addTo(map.current);
+        },
+        (error) => {
+          console.error("Erreur de géolocalisation:", error);
+        },
+        {
+          timeout: 10000,
+        }
+      );
+    } else {
+      console.error(
+        "La géolocalisation n'est pas supportée par ce navigateur."
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (!map.current) {
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: "mapbox://styles/mapbox/streets-v11",
+        center: [2.3522, 48.8566],
+        zoom: 11,
+      });
+
+      const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl,
+      });
+      if (geocoderContainer.current) {
+        geocoderContainer.current.innerHTML = "";
+        geocoderContainer.current.appendChild(geocoder.onAdd(map.current));
+      }
+
+      map.current.on("moveend", () => {
+        const bounds = map.current.getBounds();
+        const bbox = [
+          bounds.getWest(),
+          bounds.getSouth(),
+          bounds.getEast(),
+          bounds.getNorth(),
+        ];
+        fetchStations(bbox);
+      });
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            userLocation.current = { latitude, longitude };
+            map.current.flyTo({
+              center: [longitude, latitude],
+              zoom: 11,
+              essential: true,
+            });
+
+            new mapboxgl.Marker({ color: "red" })
+              .setLngLat([longitude, latitude])
+              .addTo(map.current);
+
+            setLoadingLocation(false);
+          },
+          (error) => {
+            console.error("Erreur de géolocalisation:", error);
+            setLoadingLocation(false);
+          },
+          {
+            timeout: 10000,
+          }
+        );
+      } else {
+        console.error(
+          "La géolocalisation n'est pas supportée par ce navigateur."
+        );
+        setLoadingLocation(false);
+      }
+    }
+
+    return () => {
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (stations.length > 0 && map.current) {
+      addMarkers();
+    }
+  }, [stations]);
+
+  const closeSidebar = () => {
+    setSelectedStation(null);
+  };
+
   return (
-    <div className="relative h-screen flex">
-      <div ref={mapContainer} className="w-4/6 h-full" />
-      <div className="w-2/6 h-full pt-[120px] bg-gray-800 text-white p-4 overflow-auto">
-        <h1 className="text-2xl mb-4">Search Filters</h1>
-        {chargingStations.map((station) => {
-          const [latitude, longitude] = station.geo_point_borne
-            .split(",")
-            .map(Number);
-          return (
-            <div key={number} className="mb-4">
-              <h3 className="text-xl">{station.n_station}</h3>
-              <p>
-                {station.Adresse}
-                <br />
-                {station.Ville}
-              </p>
-              <button
-                type="button"
-                onClick={() => flyToMarker(longitude, latitude)}
-                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
-              >
-                Go to Marker
-              </button>
-            </div>
-          );
-        })}
-        <div>
-          <label
-            htmlFor="filter1"
-            className="block text-sm font-medium text-gray-400"
-          >
-            Filter 1
-          </label>
-          <input
-            id="filter1"
-            type="text"
-            className="mt-1 block w-full p-2 bg-gray-700 text-white rounded-md border-gray-600 focus:border-blue-500 focus:ring-blue-500"
-          />
+    <div className="map-page flex h-screen mt-28">
+      <div className="w-full h-full relative">
+        <div
+          ref={geocoderContainer}
+          className="absolute top-4 left-4 z-10 flex items-center"
+        >
+          <div className="w-96 relative flex items-center bg-white p-2 rounded shadow-md">
+            <input
+              type="text"
+              className="w-full px-2 py-1 text-gray-800"
+              placeholder="Chercher"
+              style={{ marginRight: "25px" }}
+            />
+            <HiOutlineSearch
+              className="text-2xl text-gray-600"
+              style={{ position: "absolute", right: "32px" }}
+            />
+            <SiLocal
+              className="text-2xl text-blue-500 cursor-pointer"
+              style={{ position: "absolute", right: "0px" }}
+            />
+          </div>
         </div>
-        <div className="mt-4">
-          <label
-            htmlFor="filter2"
-            className="block text-sm font-medium text-gray-400"
-          >
-            Filter 2
-          </label>
-          <input
-            id="filter2"
-            type="text"
-            className="mt-1 block w-full p-2 bg-gray-700 text-white rounded-md border-gray-600 focus:border-blue-500 focus:ring-blue-500"
-          />
-        </div>
+        <div ref={mapContainer} className="w-full h-full z-0" />
+        <TbScanPosition
+          className="fixed bottom-4 right-4 text-4xl text-red-500 cursor-pointer z-20"
+          onClick={goToUserLocation}
+        />
       </div>
+      {loadingLocation && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-white bg-opacity-75 z-30">
+          <div className="text-2xl font-bold">
+            Chargement de la localisation...
+          </div>
+        </div>
+      )}
+      {selectedStation && (
+        <div className="fixed top-0 left-0 bg-white p-4 shadow-lg rounded h-full w-1/4 overflow-y-auto z-30">
+          <div className="flex justify-end">
+            <IoClose
+              className="text-2xl text-gray-600 cursor-pointer"
+              onClick={closeSidebar}
+            />
+          </div>
+          <h2 className="text-xl font-bold">{selectedStation.nom_station}</h2>
+          <p>{selectedStation.adresse_station}</p>
+          <p>{selectedStation.horaires}</p>
+          <p>{selectedStation.contact_operateur}</p>
+          <p>{selectedStation.telephone_operateur}</p>
+          <p>{selectedStation.condition_acces}</p>
+        </div>
+      )}
     </div>
   );
 }
+
+export default Map;
