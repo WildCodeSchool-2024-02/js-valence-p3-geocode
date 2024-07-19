@@ -1,3 +1,4 @@
+
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config({ path: "./..env" });
@@ -8,10 +9,10 @@ const {
 } = require("./database/supabase");
 const terminalsRoutes = require("./routes/router");
 
-const app = express();
-const port = process.env.APP_PORT;
 
-// Activer CORS pour toutes les routes
+const app = express();
+const userRoutes = require('./routes/routes');
+
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
@@ -21,15 +22,12 @@ app.use(
 );
 
 app.use(express.json());
+app.use(cors({
+  origin: ['http://localhost:3310', 'http://localhost:3000'],
+}));
 
-app.get("/api/users", async (_, response) => {
-  try {
-    const [userResult, geocodeResult] = await Promise.all([
-      getUsers(),
-      getGeocode(),
-    ]);
-    const { data: userData, error: userError } = userResult;
-    const { data: geocodeData, error: geocodeError } = geocodeResult;
+app.use('/api', userRoutes);
+
 
     if (userError || geocodeError) {
       return response.status(500).json({
@@ -67,6 +65,9 @@ app.get("/api/stations", async (req, res) => {
 
 app.use("/api", terminalsRoutes);
 
-app.listen(port, () => {
-  console.info(`Server running at http://localhost:${port}`);
+
+const PORT = process.env.PORT || 3310;
+app.listen(PORT, () => {
+  console.info(`Server running on port: http://localhost:${PORT}`);
+
 });

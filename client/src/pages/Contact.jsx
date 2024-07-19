@@ -2,8 +2,8 @@ import { FaLinkedin, FaSearch, FaInstagram, FaTwitter } from "react-icons/fa";
 
 function Contact() {
   return (
-    <div className="bg-[#1E1E24] min-h-screen text-white p-8 flex items-center justify-center">
-      <div className="max-w-7xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="flex items-center justify-center min-h-screen p-8 text-white bg-gray-900">
+      <div className="grid w-full grid-cols-1 gap-8 mx-auto max-w-7xl md:grid-cols-2">
         <div className="flex flex-col justify-between max-w-md">
           <h1 className="text-8xl mb-4 font-bold text-[#BDC2CC]">Contact</h1>
           <p className="text-lg mb-8 text-[#BDC2CC]">
@@ -19,7 +19,7 @@ function Contact() {
           </div>
         </div>
         <div>
-          <form className=" p-8 rounded-lg shadow-md space-y-4">
+          <form className="p-8 space-y-4 rounded-lg shadow-md ">
             <div className="grid grid-cols-2 gap-4">
               <input
                 type="text"
@@ -49,7 +49,7 @@ function Contact() {
             />
             <button
               type="submit"
-              className="w-full p-4 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full p-4 text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
             >
               <div className="flex items-center justify-center">
                 <FaSearch className="mr-2" />

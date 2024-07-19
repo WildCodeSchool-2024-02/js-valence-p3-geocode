@@ -5,7 +5,12 @@ import Home from "./pages/Home";
 import Contact from "./pages/Contact";
 import Map from "./pages/Map";
 
+
 import App from "./App";
+import Register from "./pages/Register";
+import LogIn from "./pages/LogIn";
+import Information from "./pages/Information";
+import News from "./pages/News";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +29,21 @@ const router = createBrowserRouter([
         path: "map",
         element: <Map />,
       },
+        path: "register",
+        element: <Register />
+      },
+      {
+        path: "login",
+        element: <LogIn />
+      },
+      {
+        path: "information",
+        element: <Information />
+      },
+      {
+        path: "news",
+        element: <News />
+      }
     ],
   },
 ]);
