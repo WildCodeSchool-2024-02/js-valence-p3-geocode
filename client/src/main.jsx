@@ -4,9 +4,11 @@ import ReactDOM from "react-dom/client";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
 
-
-
 import App from "./App";
+import Register from "./pages/Register";
+import LogIn from "./pages/LogIn";
+import Information from "./pages/Information";
+import News from "./pages/News";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +23,22 @@ const router = createBrowserRouter([
         path: "contact",
         element: <Contact />,
       },
+      {
+        path: "register",
+        element: <Register />
+      },
+      {
+        path: "login",
+        element: <LogIn />
+      },
+      {
+        path: "information",
+        element: <Information />
+      },
+      {
+        path: "news",
+        element: <News />
+      }
     ],
   },
 ]);
