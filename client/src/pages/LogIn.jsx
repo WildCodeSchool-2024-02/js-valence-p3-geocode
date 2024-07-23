@@ -51,7 +51,7 @@ export default function LogIn() {
         const data = await response.json();
         console.info("User logged in successfully");
         localStorage.setItem("id_login_user", data.id_login_user);
-        navigate("/contact");
+        navigate("/map");
       } else {
         const errorData = await response.json();
         console.error("Error logging in:", errorData);
@@ -63,6 +63,8 @@ export default function LogIn() {
       console.error("Error:", error);
       setErrors({ submit: "Failed to login. Please try again." });
     }
+
+    console.info(formData)
   };
 
   return (
@@ -74,7 +76,7 @@ export default function LogIn() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
-              className="block mb-2 text-sm font-bold text-gray-400"
+              className="mb-2 text-sm font-bold text-gray-400 "
               htmlFor="email"
             >
               Your email

@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import LogIn from "./pages/LogIn";
 import Information from "./pages/Information";
 import News from "./pages/News";
+import DashboardAdmin from "./pages/DashboardAdmin";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,24 @@ const router = createBrowserRouter([
       }
     ],
   },
+  { 
+    path: "dashboardAdmin",
+    element: DashboardAdmin,
+    children: [
+      {
+        path: "users",
+        element: "",
+      },
+      {
+        path: "cars",
+        element: ""
+      },
+      {
+        path: "terminal",
+        element: ""
+      },
+    ]
+  }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
