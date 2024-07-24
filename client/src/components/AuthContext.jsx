@@ -7,18 +7,21 @@ function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
+    const role = localStorage.getItem("role");
+    if (token && role) {
       setAuth({ token, isAuthenticated: true });
     }
   }, []);
 
-  const login = (token) => {
+  const login = (token, role) => {
     localStorage.setItem("token", token);
+    localStorage.setItem("role", role);
     setAuth({ token, isAuthenticated: true });
   };
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     setAuth({ token: null, isAuthenticated: false });
   };
 

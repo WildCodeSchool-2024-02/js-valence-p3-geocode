@@ -1,3 +1,4 @@
+import { jwtDecode } from "jwt-decode";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
@@ -37,8 +38,17 @@ export default function LogIn() {
       if (response.ok) {
         const data = await response.json();
         console.info("User logged in successfully");
+
+        const decodedToken = jwtDecode(data.token);
+
         login(data.token);
-        navigate("/map");
+        localStorage.setItem("role", decodedToken.role || "User");
+
+        if (decodedToken.role === "Admin") {
+          navigate("/dashboardAdmin");
+        } else {
+          navigate("/contact");
+        }
       } else {
         const errorData = await response.json();
         console.error("Error logging in:", errorData);
@@ -63,7 +73,7 @@ export default function LogIn() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
-              className="mb-2 text-sm font-bold text-gray-400 "
+              className="mb-2 text-sm font-bold text-gray-400"
               htmlFor="email"
             >
               Your email

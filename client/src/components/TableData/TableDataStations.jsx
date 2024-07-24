@@ -1,3 +1,4 @@
+import { useOutletContext } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -6,10 +7,50 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 
 const theme = createTheme({
   components: {
+    MuiDataGrid: {
+      styleOverrides: {
+        root: {
+          "& .MuiDataGrid-columnHeader": {
+            backgroundColor: "#2d3748",
+            color: "lightgray",
+            "&:hover": {
+              backgroundColor: "#2d3748",
+            },
+          },
+          "& .MuiDataGrid-cell": {
+            color: "lightgray",
+          },
+          "& .MuiDataGrid-row": {
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+            },
+          },
+          "& .MuiDataGrid-sortIcon": {
+            color: "lightgray",
+          },
+          "& .MuiDataGrid-filterIcon": {
+            color: "lightgray",
+          },
+          "& .MuiDataGrid-columnSeparator": {
+            color: "lightgray",
+          },
+          "& .MuiDataGrid-toolbarContainer": {
+            color: "lightgray",
+          },
+          "& .MuiDataGrid-footerCell": {
+            color: "lightgray",
+          },
+        },
+      },
+    },
     MuiTablePagination: {
       styleOverrides: {
-        root: { color: "lightgray" },
-        selectIcon: { color: "lightgray" },
+        root: {
+          color: "lightgray",
+        },
+        selectIcon: {
+          color: "lightgray",
+        },
         toolbar: {
           "& .MuiTablePagination-caption, & .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows, & .MuiTablePagination-select, & .MuiTablePagination-actions button":
             {
@@ -18,69 +59,58 @@ const theme = createTheme({
         },
       },
     },
-    MuiDataGrid: {
-      styleOverrides: {
-        root: {
-          "& .MuiDataGrid-row:hover": {
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-          },
-        },
-        cell: {
-          color: "lightgray",
-        },
-      },
-    },
   },
 });
 
-export default function TableData() {
+export default function TableDataStations() {
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 8,
   });
   const [data, setData] = useState([]);
   const [errors, setErrors] = useState(null);
-
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch("http://localhost:3310/api/users", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error:", errorData);
-        throw new Error(errorData.message || "Failed to fetch...");
-      }
-
-      const fetchedData = await response.json();
-      console.info("Fetched users data:", fetchedData);
-
-      if (Array.isArray(fetchedData.data)) {
-        setData(fetchedData.data);
-      } else {
-        setData([]);
-        console.error("Fetched data is not an array:", fetchedData);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setErrors(error.message || "Failed to fetch. Please try again.");
-      setData([]);
-    }
-  };
+  const { searchQuery } = useOutletContext();
 
   useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("http://localhost:3310/api/users", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Error:", errorData);
+          throw new Error(errorData.message || "Failed to fetch...");
+        }
+
+        const fetchedData = await response.json();
+        if (Array.isArray(fetchedData.data)) {
+          setData(fetchedData.data);
+        } else {
+          setData([]);
+          console.error("Fetched data is not an array:", fetchedData);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setErrors(error.message || "Failed to fetch. Please try again.");
+        setData([]);
+      }
+    };
+
     fetchUsers();
   }, []);
 
-  useEffect(() => {
-    console.info("Current data state:", data);
-  }, [data]);
+  const filteredRows = data.filter((user) =>
+    [user.firstName, user.lastName, user.email, user.gender, user.role].some(
+      (field) => field.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
 
-  const rows = data.map((user, index) => ({
+  const rows = filteredRows.map((user, index) => ({
     id: index + 1,
     firstName: user.firstName,
     lastName: user.lastName,
@@ -153,7 +183,7 @@ export default function TableData() {
     {
       field: "actions",
       headerName: "Actions",
-      width: 200,
+      width: 300,
       headerAlign: "center",
       renderCell: () => (
         <div
@@ -184,16 +214,6 @@ export default function TableData() {
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           hideFooterSelectedRowCount
-          componentsProps={{
-            pagination: {
-              sx: {
-                "& .MuiTablePagination-root, & .MuiTablePagination-toolbar, & .MuiTablePagination-caption, & .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows, & .MuiTablePagination-select, & .MuiTablePagination-actions button":
-                  {
-                    color: "lightgray",
-                  },
-              },
-            },
-          }}
         />
       </div>
     </ThemeProvider>
