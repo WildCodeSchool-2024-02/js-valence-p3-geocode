@@ -3,7 +3,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
-
 import App from "./App";
 import Register from "./pages/Register";
 import LogIn from "./pages/LogIn";
@@ -14,6 +13,9 @@ import Users from "./pages/dashboardAdmin/Users";
 import Stations from "./pages/dashboardAdmin/Stations";
 import Cars from "./pages/dashboardAdmin/Cars";
 import Statistics from "./pages/dashboardAdmin/Statistics";
+import Map from "./pages/Map";
+import { AuthProvider } from "./components/AuthContext";
+import PrivateRoute from "./components/privateRoute";
 
 const router = createBrowserRouter([
   {
@@ -44,11 +46,23 @@ const router = createBrowserRouter([
         path: "news",
         element: <News />,
       },
+      {
+        path: "map",
+        element: (
+          <PrivateRoute>
+            <Map />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
   {
     path: "dashboardAdmin",
-    element: <DashboardAdmin />,
+    element: (
+      <PrivateRoute>
+        <DashboardAdmin />
+      </PrivateRoute>
+    ),
     children: [
       {
         path: "stats",
@@ -74,6 +88,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );

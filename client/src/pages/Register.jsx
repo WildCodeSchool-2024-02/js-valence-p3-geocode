@@ -17,7 +17,7 @@ function Register() {
     birthDate: "",
     postalCode: "",
     city: "",
-    role:"",
+    role: "User",
     numVehicles: "",
   });
 
@@ -66,7 +66,7 @@ function Register() {
         const data = await response.json();
         console.info("User created successfully");
         localStorage.setItem("id_login_user", data.id_login_user);
-        navigate("/sign"); 
+        navigate("/map");
       } else {
         const errorData = await response.json();
         console.error("Error creating user:", errorData);
@@ -79,7 +79,7 @@ function Register() {
       console.error("Error:", error);
       setErrors({ submit: "Failed to create user. Please try again." });
     }
-    console.info(formData)
+    console.info(formData);
   };
 
   return (
@@ -155,7 +155,9 @@ function Register() {
                 onChange={handleChange}
                 required
               >
-                <option disabled value="">Choose...</option>
+                <option disabled value="">
+                  Choose...
+                </option>
                 <option>Male</option>
                 <option>Female</option>
                 <option>Other</option>
