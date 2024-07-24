@@ -10,6 +10,10 @@ import LogIn from "./pages/LogIn";
 import Information from "./pages/Information";
 import News from "./pages/News";
 import DashboardAdmin from "./pages/DashboardAdmin";
+import Users from "./pages/dashboardAdmin/Users";
+import Stations from "./pages/dashboardAdmin/Stations";
+import Cars from "./pages/dashboardAdmin/Cars";
+import Statistics from "./pages/dashboardAdmin/Statistics";
 
 const router = createBrowserRouter([
   {
@@ -18,7 +22,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />
+        element: <Home />,
       },
       {
         path: "contact",
@@ -26,40 +30,44 @@ const router = createBrowserRouter([
       },
       {
         path: "register",
-        element: <Register />
+        element: <Register />,
       },
       {
         path: "login",
-        element: <LogIn />
+        element: <LogIn />,
       },
       {
         path: "information",
-        element: <Information />
+        element: <Information />,
       },
       {
         path: "news",
-        element: <News />
-      }
+        element: <News />,
+      },
     ],
   },
-  { 
+  {
     path: "dashboardAdmin",
-    element: <DashboardAdmin/>,
+    element: <DashboardAdmin />,
     children: [
       {
+        path: "stats",
+        element: <Statistics />,
+      },
+      {
         path: "users",
-        element: "",
+        element: <Users />,
       },
       {
         path: "cars",
-        element: ""
+        element: <Cars />,
       },
       {
-        path: "terminal",
-        element: ""
+        path: "stations",
+        element: <Stations />,
       },
-    ]
-  }
+    ],
+  },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

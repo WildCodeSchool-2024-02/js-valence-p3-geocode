@@ -11,7 +11,6 @@ export default function LogIn() {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -64,12 +63,12 @@ export default function LogIn() {
       setErrors({ submit: "Failed to login. Please try again." });
     }
 
-    console.info(formData)
+    console.info(formData);
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen overflow-hidden bg-gray-900">
-      <div className="max-w-md mx-auto bg-gray-800 rounded-lg shadow-lg p-11">
+      <div className="max-w-md mx-auto rounded-lg shadow-lg c p-11">
         <h2 className="text-2xl font-bold text-[#21A89A] mb-10">
           Sign in to your account!
         </h2>
