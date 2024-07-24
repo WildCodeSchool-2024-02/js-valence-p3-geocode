@@ -1,4 +1,4 @@
-const { getStationsInformations } = require("../database/supabase");
+const { getStationsInformations } = require("../models/stationModel");
 
 const browseStations = async (req, res, next) => {
   try {

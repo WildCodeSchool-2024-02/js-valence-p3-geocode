@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import { HiOutlineSearch } from "react-icons/hi";
-import { SiLocal } from "react-icons/si";
 import { TbScanPosition } from "react-icons/tb";
-import { IoClose } from "react-icons/io5";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
-import axios from "axios";
+import SearchBar from "../components/ SearchBar";
+import Sidebar from "../components/Slidebar";
 
 mapboxgl.accessToken =
   "pk.eyJ1Ijoia2FsZWRndXptYW4iLCJhIjoiY2x5ZmpqZG9oMDA5bzJscjJmZDlyeGdwdCJ9.JeVpoEFj5YZvHxc9T017dA";
@@ -21,24 +19,18 @@ function Map() {
   const [stations, setStations] = useState([]);
   const [loadingLocation, setLoadingLocation] = useState(true);
   const userLocation = useRef(null);
+  const userMarker = useRef(null);
 
   const fetchStations = async (bbox) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/stations`,
-        {
-          params: {
-            north: bbox[3],
-            south: bbox[1],
-            east: bbox[2],
-            west: bbox[0],
-          },
-        }
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/stations?north=${bbox[3]}&south=${bbox[1]}&east=${bbox[2]}&west=${bbox[0]}`
       );
-      if (Array.isArray(response.data)) {
-        setStations(response.data);
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setStations(data);
       } else {
-        console.error("Expected an array but got:", response.data);
+        console.error("Expected an array but got:", data);
       }
     } catch (error) {
       console.error("Error fetching stations:", error);
@@ -55,7 +47,8 @@ function Map() {
         const latitude = Number(station.consolidated_latitude);
 
         if (!Number.isNaN(longitude) && !Number.isNaN(latitude)) {
-          const marker = new mapboxgl.Marker()
+          const color = station.reservation ? "blue" : "green";
+          const marker = new mapboxgl.Marker({ color })
             .setLngLat([longitude, latitude])
             .addTo(map.current);
 
@@ -82,13 +75,19 @@ function Map() {
           userLocation.current = { latitude, longitude };
           map.current.flyTo({
             center: [longitude, latitude],
-            zoom: 14,
+            zoom: 16,
+            pitch: 45,
+            bearing: -17.6,
             essential: true,
           });
 
-          new mapboxgl.Marker({ color: "red" })
-            .setLngLat([longitude, latitude])
-            .addTo(map.current);
+          if (userMarker.current) {
+            userMarker.current.setLngLat([longitude, latitude]);
+          } else {
+            userMarker.current = new mapboxgl.Marker({ color: "red" })
+              .setLngLat([longitude, latitude])
+              .addTo(map.current);
+          }
         },
         (error) => {
           console.error("Erreur de géolocalisation:", error);
@@ -108,19 +107,69 @@ function Map() {
     if (!map.current) {
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
-        style: "mapbox://styles/mapbox/streets-v11",
-        center: [2.3522, 48.8566],
-        zoom: 11,
+        style: "mapbox://styles/mapbox/navigation-night-v1",
+        center: [4.891, 44.933],
+        zoom: 16,
+        pitch: 45,
+        bearing: -17.6,
       });
 
       const geocoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
         mapboxgl,
+        flyTo: {
+          zoom: 16,
+          pitch: 45,
+          bearing: -17.6,
+        },
       });
       if (geocoderContainer.current) {
         geocoderContainer.current.innerHTML = "";
         geocoderContainer.current.appendChild(geocoder.onAdd(map.current));
       }
+
+      geocoder.on("result", (e) => {
+        map.current.flyTo({
+          center: e.result.center,
+          zoom: 16,
+          pitch: 45,
+          bearing: -17.6,
+          essential: true,
+        });
+      });
+
+      map.current.on("style.load", () => {
+        map.current.addLayer({
+          id: "3d-buildings",
+          source: "composite",
+          "source-layer": "building",
+          filter: ["==", "extrude", "true"],
+          type: "fill-extrusion",
+          minzoom: 15,
+          paint: {
+            "fill-extrusion-color": "#aaa",
+            "fill-extrusion-height": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              15,
+              0,
+              15.05,
+              ["get", "height"],
+            ],
+            "fill-extrusion-base": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              15,
+              0,
+              15.05,
+              ["get", "min_height"],
+            ],
+            "fill-extrusion-opacity": 0.6,
+          },
+        });
+      });
 
       map.current.on("moveend", () => {
         const bounds = map.current.getBounds();
@@ -140,11 +189,13 @@ function Map() {
             userLocation.current = { latitude, longitude };
             map.current.flyTo({
               center: [longitude, latitude],
-              zoom: 11,
+              zoom: 16,
+              pitch: 45,
+              bearing: -17.6,
               essential: true,
             });
 
-            new mapboxgl.Marker({ color: "red" })
+            userMarker.current = new mapboxgl.Marker({ color: "red" })
               .setLngLat([longitude, latitude])
               .addTo(map.current);
 
@@ -187,27 +238,7 @@ function Map() {
   return (
     <div className="map-page flex h-screen mt-28">
       <div className="w-full h-full relative">
-        <div
-          ref={geocoderContainer}
-          className="absolute top-4 left-4 z-10 flex items-center"
-        >
-          <div className="w-96 relative flex items-center bg-white p-2 rounded shadow-md">
-            <input
-              type="text"
-              className="w-full px-2 py-1 text-gray-800"
-              placeholder="Chercher"
-              style={{ marginRight: "25px" }}
-            />
-            <HiOutlineSearch
-              className="text-2xl text-gray-600"
-              style={{ position: "absolute", right: "32px" }}
-            />
-            <SiLocal
-              className="text-2xl text-blue-500 cursor-pointer"
-              style={{ position: "absolute", right: "0px" }}
-            />
-          </div>
-        </div>
+        <SearchBar ref={geocoderContainer} />
         <div ref={mapContainer} className="w-full h-full z-0" />
         <TbScanPosition
           className="fixed bottom-4 right-4 text-4xl text-red-500 cursor-pointer z-20"
@@ -222,20 +253,10 @@ function Map() {
         </div>
       )}
       {selectedStation && (
-        <div className="fixed top-0 left-0 bg-white p-4 shadow-lg rounded h-full w-1/4 overflow-y-auto z-30">
-          <div className="flex justify-end">
-            <IoClose
-              className="text-2xl text-gray-600 cursor-pointer"
-              onClick={closeSidebar}
-            />
-          </div>
-          <h2 className="text-xl font-bold">{selectedStation.nom_station}</h2>
-          <p>{selectedStation.adresse_station}</p>
-          <p>{selectedStation.horaires}</p>
-          <p>{selectedStation.contact_operateur}</p>
-          <p>{selectedStation.telephone_operateur}</p>
-          <p>{selectedStation.condition_acces}</p>
-        </div>
+        <Sidebar
+          selectedStation={selectedStation}
+          closeSidebar={closeSidebar}
+        />
       )}
     </div>
   );
