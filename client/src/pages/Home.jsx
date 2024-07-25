@@ -1,6 +1,5 @@
 import { localisation, slogan } from "../constant/LandingPageConstant";
 import { background, bar, position, station } from "../assets/index";
-import { DatePicker, TimePicker } from "../components/index";
 
 export default function Home() {
   return (

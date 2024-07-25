@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import profile from "../../assets/images/profile.png";
 
@@ -52,3 +53,7 @@ export default function Header({ onSearch }) {
     </header>
   );
 }
+
+Header.propTypes = {
+  onSearch: PropTypes.func.isRequired,
+};
