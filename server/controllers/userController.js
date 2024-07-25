@@ -17,7 +17,7 @@ const registerUser = async (req, res) => {
     birthDate,
     postalCode,
     city,
-    role = "User", // Default role
+    role = "User",
     numVehicles,
   } = req.body;
 
@@ -47,7 +47,7 @@ const registerUser = async (req, res) => {
     birthDate,
     postalCode,
     city,
-    role, // Ensure role is passed correctly
+    role,
     numVehicles,
   });
 
@@ -61,7 +61,7 @@ const registerUser = async (req, res) => {
     return res.status(500).json({ error: "User creation failed" });
   }
 
-  const token = generateToken(data[0]); // Access the first element since insert returns an array
+  const token = generateToken(data[0]);
   return res.status(201).json({ data: data[0], token });
 };
 

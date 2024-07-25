@@ -90,9 +90,11 @@ export default function TableDataStations() {
         const fetchedData = await response.json();
         if (Array.isArray(fetchedData.data)) {
           setData(fetchedData.data);
+          setErrors(null);
         } else {
           setData([]);
           console.error("Fetched data is not an array:", fetchedData);
+          setErrors("Fetched data is not in the expected format.");
         }
       } catch (error) {
         console.error("Error:", error);
@@ -102,7 +104,7 @@ export default function TableDataStations() {
     };
 
     fetchUsers();
-  }, []);
+  }, [searchQuery]);
 
   const filteredRows = data.filter((user) =>
     [user.firstName, user.lastName, user.email, user.gender, user.role].some(
@@ -202,19 +204,34 @@ export default function TableDataStations() {
     },
   ];
 
+  console.info(errors);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className="App">
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          autoHeight
-          pagination
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
-          hideFooterSelectedRowCount
-        />
+        {errors ? (
+          <div
+            style={{
+              padding: "20px",
+              color: "red",
+              textAlign: "center",
+              fontWeight: "bold",
+            }}
+          >
+            {errors}
+          </div>
+        ) : (
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            autoHeight
+            pagination
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            hideFooterSelectedRowCount
+          />
+        )}
       </div>
     </ThemeProvider>
   );

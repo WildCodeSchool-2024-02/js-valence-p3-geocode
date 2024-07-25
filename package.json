@@ -41,7 +41,6 @@
   },
   "dependencies": {
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
-    "@mui/x-data-grid": "^7.11.0",
     "@mui/x-data-grid-generator": "^7.11.0",
     "jwt-decode": "^4.0.0",
     "styled-components": "^6.1.12"

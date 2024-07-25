@@ -202,6 +202,8 @@ export default function TableDataCars() {
     },
   ];
 
+  console.info(errors);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
