@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export default function DatePicker({ onChange }) {
   const handleChange = (event) => {
     onChange(event.target.value);
@@ -15,3 +17,7 @@ export default function DatePicker({ onChange }) {
     </form>
   );
 }
+
+DatePicker.propTypes = {
+  onChange: PropTypes.func.isRequired,
+};
