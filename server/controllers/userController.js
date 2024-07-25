@@ -5,6 +5,7 @@ const {
   getUserById,
   deleteUser,
 } = require("../models/userModel");
+const { generateToken, hashPassword } = require("./authToken");
 
 const registerUser = async (req, res) => {
   const {
@@ -16,23 +17,52 @@ const registerUser = async (req, res) => {
     birthDate,
     postalCode,
     city,
+    role = "User",
+    numVehicles,
   } = req.body;
+
+  console.info("registerUser - request body:", req.body);
+
+  const { data: existingUser, error: findError } = await getUserByEmail(email);
+  console.info("registerUser - getUserByEmail result:", {
+    existingUser,
+    findError,
+  });
+
+  if (findError) {
+    return res.status(400).json({ error: findError.message });
+  }
+  if (existingUser) {
+    return res.status(400).json({ error: "Email is already in use" });
+  }
+
+  const hashedPassword = hashPassword(password);
 
   const { data, error } = await createUser({
     email,
-    password,
+    password: hashedPassword,
     firstName,
     lastName,
     gender,
     birthDate,
     postalCode,
     city,
+    role,
+    numVehicles,
   });
+
+  console.info("registerUser - createUser result:", { data, error });
 
   if (error) {
     return res.status(400).json({ error: error.message });
   }
-  return res.status(201).json({ data });
+
+  if (!data || data.length === 0) {
+    return res.status(500).json({ error: "User creation failed" });
+  }
+
+  const token = generateToken(data[0]);
+  return res.status(201).json({ data: data[0], token });
 };
 
 const loginUser = async (req, res) => {
@@ -46,11 +76,17 @@ const loginUser = async (req, res) => {
     return res.status(400).json({ error: "User not found" });
   }
 
-  if (user.password !== password) {
+  const hashedPassword = hashPassword(password);
+  if (user.password !== hashedPassword) {
     return res.status(400).json({ error: "Invalid credentials" });
   }
 
-  return res.status(200).json({ message: "Login successful", user });
+  const token = generateToken(user);
+  return res.status(200).json({
+    message: "Login successful",
+    token,
+    role: user.role,
+  });
 };
 
 const getAllUsers = async (_, res) => {

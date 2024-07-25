@@ -4,7 +4,21 @@ const createUser = async (userData) => {
   const { data, error } = await supabase
     .schema("geocode")
     .from("user")
-    .insert([userData]);
+    .insert([
+      {
+        email: userData.email,
+        password: userData.password,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        gender: userData.gender,
+        birthDate: userData.birthDate,
+        postalCode: userData.postalCode,
+        city: userData.city,
+        role: userData.role,
+        numVehicles: userData.numVehicles,
+      },
+    ])
+    .select();
   return { data, error };
 };
 
@@ -15,6 +29,11 @@ const getUserByEmail = async (email) => {
     .select("*")
     .eq("email", email)
     .single();
+
+  if (error && error.details === "The result contains 0 rows") {
+    return { data: null, error: null };
+  }
+
   return { data, error };
 };
 
