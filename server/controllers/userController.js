@@ -21,10 +21,10 @@ const registerUser = async (req, res) => {
     numVehicles,
   } = req.body;
 
-  console.log("registerUser - request body:", req.body);
+  console.info("registerUser - request body:", req.body);
 
   const { data: existingUser, error: findError } = await getUserByEmail(email);
-  console.log("registerUser - getUserByEmail result:", {
+  console.info("registerUser - getUserByEmail result:", {
     existingUser,
     findError,
   });
@@ -51,7 +51,7 @@ const registerUser = async (req, res) => {
     numVehicles,
   });
 
-  console.log("registerUser - createUser result:", { data, error });
+  console.info("registerUser - createUser result:", { data, error });
 
   if (error) {
     return res.status(400).json({ error: error.message });

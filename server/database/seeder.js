@@ -2,7 +2,7 @@ const { faker } = require("@faker-js/faker");
 const fs = require("fs");
 
 const escapeString = (str) => {
-  return str.replace(/'/g, "''");
+  str.replace(/'/g, "''");
 };
 
 const generateSQLInsertStatements = (count) => {
@@ -23,7 +23,7 @@ const generateSQLInsertStatements = (count) => {
 
     INSERT INTO geocode."user" (role, gender, firstName, lastName, birthDate, postalCode, email, city, password) VALUES\n`;
 
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < count; i += 1) {
     const user = {
       role: escapeString(faker.helpers.arrayElement(["User"])),
       gender: escapeString(faker.helpers.arrayElement(["Male", "Female"])),
