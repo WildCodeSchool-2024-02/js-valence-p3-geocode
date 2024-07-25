@@ -11,7 +11,7 @@ export default function NavBar() {
   const { auth, logout } = useContext(AuthContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
-  const dropdownRef = useRef(null); // Create a ref for the dropdown menu
+  const dropdownRef = useRef(null); 
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -42,11 +42,11 @@ export default function NavBar() {
     } else {
       navigate("/dashboardUser");
     }
-    setIsDropdownOpen(false); // Close the dropdown after navigation
+    setIsDropdownOpen(false); 
   }, [navigate]);
 
   return (
-    <div className="fixed top-0 left-0 z-20 flex items-center w-full ${isMapPage ? "bg-[#1F2937]" : "bg-transparent"} px-20 bg-transparent place-content-between">
+        <div className={`fixed top-0 left-0 z-20 flex items-center w-full px-20 ${isMapPage ? "bg-[#1F2937]" : "bg-transparent"} place-content-between`}>
       <div>
         <a href="/">
           <img src={logo} alt="Company Logo" className="w-32 p-4" />
