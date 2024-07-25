@@ -27,6 +27,7 @@ function Map() {
         `${import.meta.env.VITE_API_URL}/api/stations?north=${bbox[3]}&south=${bbox[1]}&east=${bbox[2]}&west=${bbox[0]}`
       );
       const data = await response.json();
+      console.info("Stations data fetched:", data);
       if (Array.isArray(data)) {
         setStations(data);
       } else {
@@ -47,13 +48,15 @@ function Map() {
         const latitude = Number(station.consolidated_latitude);
 
         if (!Number.isNaN(longitude) && !Number.isNaN(latitude)) {
-          const color = station.reservation ? "blue" : "green";
+          const color = station.reservation ? "green" : "blue";
           const marker = new mapboxgl.Marker({ color })
             .setLngLat([longitude, latitude])
             .addTo(map.current);
 
           const markerElement = marker.getElement();
           markerElement.addEventListener("click", () => {
+            console.info("Station clicked:", station);
+            console.info("Station ID:", station.stationID);
             setSelectedStation(station);
           });
 

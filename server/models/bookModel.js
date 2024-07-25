@@ -1,7 +1,10 @@
 const supabase = require("../database/supabase");
 
 const createBooking = async (bookingData) => {
-  const { data, error } = await supabase.from("booking").insert([bookingData]);
+  const { data, error } = await supabase
+    .schema("geocode")
+    .from("booking")
+    .insert([bookingData]);
   return { data, error };
 };
 

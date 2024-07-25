@@ -1,18 +1,25 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { FaMapMarkerAlt, FaClock, FaPhone, FaInfoCircle } from "react-icons/fa";
 import { DatePicker, TimePicker } from "./index";
 
 function Sidebar({ selectedStation, closeSidebar }) {
   const [reservationData, setReservationData] = useState({
-    date: null,
+    dateReservation: null,
     checkIn: null,
     checkOut: null,
   });
 
+  useEffect(() => {
+    console.info("Selected Station data:", selectedStation);
+  }, [selectedStation]);
+
   const handleDateChange = (date) => {
-    setReservationData({ ...reservationData, date });
+    setReservationData({
+      ...reservationData,
+      dateReservation: new Date(date),
+    });
   };
 
   const handleCheckInChange = (time) => {
@@ -25,75 +32,97 @@ function Sidebar({ selectedStation, closeSidebar }) {
 
   const handleReservation = async () => {
     if (
-      reservationData.date &&
+      reservationData.dateReservation &&
       reservationData.checkIn &&
-      reservationData.checkOut
+      reservationData.checkOut &&
+      selectedStation.stationID
     ) {
+      const createAt = new Date().toISOString().split("T")[0];
+      const dateReservation = reservationData.dateReservation
+        .toISOString()
+        .split("T")[0];
+      const { checkIn } = reservationData;
+      const { checkOut } = reservationData;
+
+      const reservationDetails = {
+        stationID: selectedStation.stationID,
+        createAt,
+        dateReservation,
+        checkIn,
+        checkOut,
+        userID: 1,
+      };
+
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/reservations`,
+        `${import.meta.env.VITE_API_URL}/api/booking`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            station_id: selectedStation.id,
-            date: reservationData.date,
-            check_in: reservationData.checkIn,
-            check_out: reservationData.checkOut,
-            user_id: 1, // Remplacer par l'ID de l'utilisateur connecté
-          }),
+          body: JSON.stringify(reservationDetails),
         }
       );
 
+      const responseData = await response.json();
+
       if (response.ok) {
-        alert("Réservation réussie");
+        console.info("Réservation réussie");
         closeSidebar();
       } else {
-        alert("Erreur lors de la réservation");
+        console.error("Erreur lors de la réservation:", responseData);
+        console.info(
+          `Erreur lors de la réservation: ${
+            responseData.error || response.statusText
+          }`
+        );
       }
     } else {
-      alert("Veuillez remplir tous les champs");
+      console.info("Veuillez remplir tous les champs");
     }
   };
 
   return (
-    <div className="fixed top-0 left-0 bg-gray-900 text-white p-6 shadow-lg rounded h-full w-1/3 overflow-y-auto z-30 flex flex-col">
+    <div className="fixed top-30 left-0 bg-[#1F2937] text-white p-6 shadow-lg rounded h-full w-200 overflow-y-auto z-30 flex flex-col">
       <div className="flex justify-end mb-4">
         <IoClose
           className="text-2xl text-gray-600 cursor-pointer"
           onClick={closeSidebar}
         />
       </div>
-      <h2 className="text-2xl font-bold mb-2">{selectedStation.nom_station}</h2>
+      <h2 className="text-2xl font-bold mb-2">
+        {selectedStation.nom_station || "N/A"}
+      </h2>
       <div className="mb-2 flex items-center">
         <FaMapMarkerAlt className="text-xl mr-2 text-gray-400" />
         <p className="text-lg">
-          <strong>Adresse:</strong> {selectedStation.adresse_station}
+          <strong>Adresse:</strong> {selectedStation.adresse_station || "N/A"}
         </p>
       </div>
       <div className="mb-2 flex items-center">
         <FaClock className="text-xl mr-2 text-gray-400" />
         <p className="text-lg">
-          <strong>Horaires:</strong> {selectedStation.horaires}
+          <strong>Horaires:</strong> {selectedStation.horaires || "N/A"}
         </p>
       </div>
       <div className="mb-2 flex items-center">
         <FaPhone className="text-xl mr-2 text-gray-400" />
         <p className="text-lg">
-          <strong>Contact:</strong> {selectedStation.contact_operateur}
+          <strong>Contact:</strong> {selectedStation.contact_operateur || "N/A"}
         </p>
       </div>
       <div className="mb-2 flex items-center">
         <FaPhone className="text-xl mr-2 text-gray-400" />
         <p className="text-lg">
-          <strong>Téléphone:</strong> {selectedStation.telephone_operateur}
+          <strong>Téléphone:</strong>{" "}
+          {selectedStation.telephone_operateur || "N/A"}
         </p>
       </div>
       <div className="mb-2 flex items-center">
         <FaInfoCircle className="text-xl mr-2 text-gray-400" />
         <p className="text-lg">
-          <strong>Conditions d'accès:</strong> {selectedStation.condition_acces}
+          <strong>Conditions d'accès:</strong>{" "}
+          {selectedStation.condition_acces || "N/A"}
         </p>
       </div>
 
@@ -135,7 +164,7 @@ function Sidebar({ selectedStation, closeSidebar }) {
 
 Sidebar.propTypes = {
   selectedStation: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    stationID: PropTypes.number.isRequired,
     nom_station: PropTypes.string,
     adresse_station: PropTypes.string,
     horaires: PropTypes.string,

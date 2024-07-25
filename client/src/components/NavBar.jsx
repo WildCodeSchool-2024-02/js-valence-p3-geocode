@@ -1,16 +1,15 @@
 import { useLocation } from "react-router-dom";
-
 import { logo } from "../assets/index";
 import { navLinks } from "../constant/LandingPageConstant";
 
 export default function NavBar() {
   const location = useLocation();
 
-  const isMapPage = location.pathname === "/Map"; // Vérifie si nous sommes sur la page de la carte
+  const isMapPage = location.pathname === "/Map";
 
   return (
     <div
-      className={`fixed top-0 left-0 z-20 flex w-full px-20 ${isMapPage ? "bg-gray-900" : "bg-transparent"} place-content-between`}
+      className={`fixed top-0 left-0 z-20 flex w-full px-20 ${isMapPage ? "bg-[#1F2937]" : "bg-transparent"} place-content-between`}
     >
       <div className="">
         <a href="/">

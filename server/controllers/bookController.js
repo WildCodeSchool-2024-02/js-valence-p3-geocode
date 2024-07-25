@@ -1,21 +1,39 @@
 const { createBooking, getBookingById } = require("../models/bookModel");
 
 const registerBooking = async (req, res) => {
-  const { userID, stationID, cost, checkIn, checkOut } = req.body;
+  try {
+    const { userID, stationID, createAt, dateReservation, checkIn, checkOut } =
+      req.body;
+    const cost = 20;
 
-  const { data, error } = await createBooking({
-    userID,
-    stationID,
-    createdAt: new Date().toISOString(),
-    cost,
-    checkIn,
-    checkOut,
-  });
+    if (
+      !userID ||
+      !stationID ||
+      !createAt ||
+      !dateReservation ||
+      !checkIn ||
+      !checkOut
+    ) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
 
-  if (error) {
-    return res.status(400).json({ error: error.message });
+    const { data, error } = await createBooking({
+      userID,
+      stationID,
+      createAt,
+      dateReservation,
+      checkIn,
+      checkOut,
+      cost,
+    });
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+    return res.status(201).json({ data });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
-  return res.status(201).json({ data });
 };
 
 const getBooking = async (req, res) => {
