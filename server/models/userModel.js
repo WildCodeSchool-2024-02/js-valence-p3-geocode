@@ -63,6 +63,15 @@ const deleteUser = async (userId) => {
     .eq("user_id", userId);
   return { data, error };
 };
+const updateUser = async (userId, updatedData) => {
+  const { data, error } = await supabase
+    .schema("geocode")
+    .from("user")
+    .update(updatedData)
+    .eq("user_id", userId)
+    .select();
+  return { data, error };
+};
 
 module.exports = {
   createUser,
@@ -70,4 +79,5 @@ module.exports = {
   getUsers,
   getUserById,
   deleteUser,
+  updateUser,
 };

@@ -1,14 +1,17 @@
 import { useState, useContext, useEffect, useCallback, useRef } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import { logo, profile } from "../assets/index";
 import { navLinks } from "../constant/LandingPageConstant";
 
 export default function NavBar() {
+  const location = useLocation();
+  const isMapPage = location.pathname === "/map";
   const { auth, logout } = useContext(AuthContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -43,7 +46,11 @@ export default function NavBar() {
   }, [navigate]);
 
   return (
-    <div className="fixed top-0 left-0 z-20 flex items-center w-full px-20 bg-transparent place-content-between">
+    <div
+      className={`fixed top-0 left-0 z-20 flex items-center w-full px-20 place-content-between ${
+        isMapPage ? "bg-[#1F2937]" : "bg-transparent"
+      }`}
+    >
       <div>
         <a href="/">
           <img src={logo} alt="Company Logo" className="w-32 p-4" />
