@@ -23,9 +23,6 @@ const theme = createTheme({
           "& .MuiDataGrid-columnHeader": {
             backgroundColor: "#2d3748",
             color: "lightgray",
-            "&:hover": {
-              backgroundColor: "#2d3748",
-            },
           },
           "& .MuiDataGrid-cell": {
             color: "lightgray",
@@ -166,11 +163,6 @@ export default function TableDataCars() {
     setOpenDeleteDialog(true);
   };
 
-  const openEditConfirmation = (vehicle) => {
-    setVehicleToEdit(vehicle);
-    setOpenEditDialog(true);
-  };
-
   const handleDelete = async () => {
     if (!vehicleToDelete) return;
 
@@ -229,7 +221,7 @@ export default function TableDataCars() {
       setVehicleToEdit(null);
 
       await fetchCars();
-      setSnackbarMessage("Changes cancelled!");
+      setSnackbarMessage("Changes cancelled");
       setSnackbarOpen(true);
     } catch (error) {
       setErrors(error.message);
@@ -237,16 +229,16 @@ export default function TableDataCars() {
   };
 
   const handleConfirmEdit = () => {
+    if (!vehicleToEdit) return;
+
     setOpenEditDialog(false);
-    setVehicleToEdit(null);
     setEditMode((prev) => {
       const updatedEditMode = { ...prev };
-      if (vehicleToEdit && vehicleToEdit.id) {
-        delete updatedEditMode[vehicleToEdit.id];
-      }
+      delete updatedEditMode[vehicleToEdit.id];
       return updatedEditMode;
     });
-    setSnackbarMessage("Vehicle updated successfully!");
+    setVehicleToEdit(null);
+    setSnackbarMessage("Changes made successfully!");
     setSnackbarOpen(true);
   };
 
@@ -310,12 +302,17 @@ export default function TableDataCars() {
       headerName: "Actions",
       flex: 1,
       renderCell: (params) => (
-        <div className="flex items-center justify-center w-full h-full space-x-20">
+        <div className="flex items-center justify-center w-full h-full space-x-4">
           {editMode[params.id] ? (
             <>
               <Tooltip title="Save" placement="top">
                 <GridActionsCellItem
-                  icon={<FaSave className="text-xl text-blue-500" />}
+                  icon={
+                    <FaSave
+                      className="text-blue-500"
+                      style={{ fontSize: "1.5rem" }}
+                    />
+                  }
                   label="Save"
                   onClick={() => handleSaveClick(params.id)}
                   color="primary"
@@ -323,7 +320,12 @@ export default function TableDataCars() {
               </Tooltip>
               <Tooltip title="Cancel" placement="top">
                 <GridActionsCellItem
-                  icon={<FaTimes className="text-xl text-red-500" />}
+                  icon={
+                    <FaTimes
+                      className="text-red-500"
+                      style={{ fontSize: "1.5rem" }}
+                    />
+                  }
                   label="Cancel"
                   onClick={() => handleCancelClick(params.id)}
                   color="inherit"
@@ -334,7 +336,12 @@ export default function TableDataCars() {
             <>
               <Tooltip title="Edit" placement="top">
                 <GridActionsCellItem
-                  icon={<FaEdit className="text-xl text-yellow-500" />}
+                  icon={
+                    <FaEdit
+                      className="text-orange-500"
+                      style={{ fontSize: "1.5rem" }}
+                    />
+                  }
                   label="Edit"
                   onClick={() => handleEditClick(params.id)}
                   color="inherit"
@@ -342,7 +349,12 @@ export default function TableDataCars() {
               </Tooltip>
               <Tooltip title="Delete" placement="top">
                 <GridActionsCellItem
-                  icon={<FaTrash className="text-xl text-red-500" />}
+                  icon={
+                    <FaTrash
+                      className="text-red-500"
+                      style={{ fontSize: "1.5rem" }}
+                    />
+                  }
                   label="Delete"
                   onClick={() => openDeleteConfirmation(params.id)}
                   color="inherit"
@@ -383,6 +395,17 @@ export default function TableDataCars() {
             editMode[params.id] ? "editing-cell" : ""
           }
         />
+        {Object.values(editMode).some(Boolean) && (
+          <div className="p-4 text-center text-yellow-500">
+            <strong>Instructions:</strong>
+            <ol className="list-decimal list-inside">
+              <li>Edit the desired cell directly by double clicking on it.</li>
+              <li>Click on the "Save" icon to apply the changes.</li>
+              <li>Confirm the changes in the dialog box that appears.</li>
+              <li>If you wish to cancel, click on the "Cancel" icon.</li>
+            </ol>
+          </div>
+        )}
       </div>
       <Dialog
         open={openDeleteDialog}
@@ -449,7 +472,7 @@ export default function TableDataCars() {
             autoFocus
             style={{ color: "white", backgroundColor: "#15803d" }}
           >
-            Save
+            Confirm
           </Button>
         </DialogActions>
       </Dialog>
