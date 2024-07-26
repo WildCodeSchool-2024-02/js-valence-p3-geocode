@@ -26,12 +26,13 @@ function Map() {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/stations?north=${bbox[3]}&south=${bbox[1]}&east=${bbox[2]}&west=${bbox[0]}`
       );
-      const data = await response.json();
-      console.info("Stations data fetched:", data);
-      if (Array.isArray(data)) {
-        setStations(data);
+      const result = await response.json();
+      console.info("Stations data fetched:", result);
+
+      if (result.data && Array.isArray(result.data)) {
+        setStations(result.data);
       } else {
-        console.error("Expected an array but got:", data);
+        console.error("Expected an array but got:", result);
       }
     } catch (error) {
       console.error("Error fetching stations:", error);
@@ -41,25 +42,20 @@ function Map() {
   const addMarkers = useCallback(() => {
     markers.current.forEach((marker) => marker.remove());
     markers.current = [];
-
     stations.forEach((station) => {
       if (station.consolidated_longitude && station.consolidated_latitude) {
         const longitude = Number(station.consolidated_longitude);
         const latitude = Number(station.consolidated_latitude);
-
         if (!Number.isNaN(longitude) && !Number.isNaN(latitude)) {
           const color = station.reservation ? "green" : "blue";
           const marker = new mapboxgl.Marker({ color })
             .setLngLat([longitude, latitude])
             .addTo(map.current);
-
           const markerElement = marker.getElement();
           markerElement.addEventListener("click", () => {
             console.info("Station clicked:", station);
-            console.info("Station ID:", station.stationID);
             setSelectedStation(station);
           });
-
           markers.current.push(marker);
         } else {
           console.error("Skipping invalid coordinates for station:", station);
@@ -83,7 +79,6 @@ function Map() {
             bearing: -17.6,
             essential: true,
           });
-
           if (userMarker.current) {
             userMarker.current.setLngLat([longitude, latitude]);
           } else {
@@ -126,6 +121,7 @@ function Map() {
           bearing: -17.6,
         },
       });
+
       if (geocoderContainer.current) {
         geocoderContainer.current.innerHTML = "";
         geocoderContainer.current.appendChild(geocoder.onAdd(map.current));
@@ -197,11 +193,9 @@ function Map() {
               bearing: -17.6,
               essential: true,
             });
-
             userMarker.current = new mapboxgl.Marker({ color: "red" })
               .setLngLat([longitude, latitude])
               .addTo(map.current);
-
             setLoadingLocation(false);
           },
           (error) => {
@@ -239,17 +233,17 @@ function Map() {
   };
 
   return (
-    <div className="map-page flex h-screen mt-28">
-      <div className="w-full h-full relative">
+    <div className="flex h-screen map-page mt-28">
+      <div className="relative w-full h-full">
         <SearchBar ref={geocoderContainer} />
-        <div ref={mapContainer} className="w-full h-full z-0" />
+        <div ref={mapContainer} className="z-0 w-full h-full" />
         <TbScanPosition
-          className="fixed bottom-4 right-4 text-4xl text-red-500 cursor-pointer z-20"
+          className="fixed z-20 text-4xl text-red-500 cursor-pointer bottom-4 right-4"
           onClick={goToUserLocation}
         />
       </div>
       {loadingLocation && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-white bg-opacity-75 z-30">
+        <div className="fixed top-0 left-0 z-30 flex items-center justify-center w-full h-full bg-white bg-opacity-75">
           <div className="text-2xl font-bold">
             Chargement de la localisation...
           </div>
