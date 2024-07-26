@@ -4,6 +4,7 @@ const {
   getUsers,
   getUserById,
   deleteUser,
+  updateUser,
 } = require("../models/userModel");
 const { generateToken, hashPassword } = require("./authToken");
 
@@ -86,6 +87,7 @@ const loginUser = async (req, res) => {
     message: "Login successful",
     token,
     role: user.role,
+    userId: user.user_id,
   });
 };
 
@@ -115,10 +117,21 @@ const deleteUserById = async (req, res) => {
   return res.status(200).json({ data });
 };
 
+const updateUserById = async (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+  const { data, error } = await updateUser(id, updatedData);
+  if (error) {
+    return res.status(400).json({ error: error.message });
+  }
+  return res.status(200).json({ data });
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getAllUsers,
   getUserByIdController,
   deleteUserById,
+  updateUserById,
 };

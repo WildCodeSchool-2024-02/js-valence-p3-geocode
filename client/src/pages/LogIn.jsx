@@ -41,7 +41,8 @@ export default function LogIn() {
 
         const decodedToken = jwtDecode(data.token);
 
-        login(data.token);
+        login(data.token, decodedToken.role, decodedToken.id, data.userId); // Passer l'ID de l'utilisateur
+
         localStorage.setItem("role", decodedToken.role || "User");
 
         if (decodedToken.role === "Admin") {
