@@ -41,7 +41,7 @@ export default function LogIn() {
 
         const decodedToken = jwtDecode(data.token);
 
-        login(data.token, decodedToken.role, decodedToken.id, data.userId); // Passer l'ID de l'utilisateur
+        login(data.token, decodedToken.role, decodedToken.id, data.userId);
 
         localStorage.setItem("role", decodedToken.role || "User");
 
