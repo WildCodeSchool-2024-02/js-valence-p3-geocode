@@ -13,10 +13,8 @@ const {
   deleteVehicleController,
 } = require("../controllers/vehicleController");
 const { getAllStations } = require("../models/stationModel");
-
   updateUserById,
 } = require("../controllers/userController");
-
 const router = express.Router();
 
 router.post("/register", registerUser);
