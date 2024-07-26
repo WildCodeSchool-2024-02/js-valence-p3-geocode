@@ -90,6 +90,7 @@ export default function TableDataCars() {
   const [editMode, setEditMode] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [originalRowData, setOriginalRowData] = useState({});
 
   const fetchCars = async () => {
     try {
@@ -193,23 +194,28 @@ export default function TableDataCars() {
     if (!vehicleToEdit) return;
 
     try {
+      // Restore the original data in the UI
+      const rowToRevert = originalRowData[vehicleToEdit.id];
+      if (!rowToRevert) return;
+
+      // Update the UI with the original row data
+      const updatedRows = data.map((row) =>
+        row.id === vehicleToEdit.id ? rowToRevert : row
+      );
+      setData(updatedRows);
+
+      // Revert the changes on the server
       const response = await fetch(
         `http://localhost:3310/api/vehicle/${vehicleToEdit.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userID: vehicleToEdit.user_id,
-            brand: vehicleToEdit.brand,
-            model: vehicleToEdit.model,
-            picture: vehicleToEdit.picture,
-            priseType: vehicleToEdit.priseType,
-          }),
+          body: JSON.stringify(rowToRevert),
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to update vehicle");
+        throw new Error("Failed to revert changes");
       }
 
       setOpenEditDialog(false);
@@ -218,10 +224,14 @@ export default function TableDataCars() {
         delete updatedEditMode[vehicleToEdit.id];
         return updatedEditMode;
       });
+      setOriginalRowData((prev) => {
+        const updated = { ...prev };
+        delete updated[vehicleToEdit.id];
+        return updated;
+      });
       setVehicleToEdit(null);
 
-      await fetchCars();
-      setSnackbarMessage("Changes cancelled");
+      setSnackbarMessage("Changes reverted");
       setSnackbarOpen(true);
     } catch (error) {
       setErrors(error.message);
@@ -243,18 +253,20 @@ export default function TableDataCars() {
   };
 
   const handleEditClick = (id) => {
+    const rowToEdit = data.find((row) => row.id === id);
+    setOriginalRowData((prev) => ({ ...prev, [id]: rowToEdit }));
     setEditMode((prev) => ({ ...prev, [id]: true }));
   };
 
   const handleSaveClick = async (id) => {
-    const updatedRow = rows.find((row) => row.id === id);
+    const updatedRow = data.find((row) => row.id === id);
     setVehicleToEdit(updatedRow);
     setOpenEditDialog(true);
   };
 
   const handleCancelClick = (id) => {
     setEditMode((prev) => ({ ...prev, [id]: false }));
-    fetchCars();
+    handleCancelEdit();
   };
 
   const filteredRows = data.filter((vehicle) =>
@@ -281,10 +293,25 @@ export default function TableDataCars() {
   }));
 
   const columns = [
-    { field: "id", headerName: "ID", width: 100, editable: false },
-    { field: "user_id", headerName: "User ID", width: 100, editable: true },
-    { field: "brand", headerName: "Brand", flex: 1, editable: true },
-    { field: "model", headerName: "Model", flex: 1, editable: true },
+    { field: "id", headerName: "ID", flex: 1 },
+    {
+      field: "user_id",
+      headerName: "User ID",
+      flex: 1,
+      editable: true,
+    },
+    {
+      field: "brand",
+      headerName: "Brand",
+      flex: 1,
+      editable: true,
+    },
+    {
+      field: "model",
+      headerName: "Model",
+      flex: 1,
+      editable: true,
+    },
     {
       field: "picture",
       headerName: "Link picture",
@@ -302,7 +329,15 @@ export default function TableDataCars() {
       headerName: "Actions",
       flex: 1,
       renderCell: (params) => (
-        <div className="flex items-center justify-center w-full h-full space-x-4">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+            alignItems: "center",
+            width: "100%",
+            height: "100%",
+          }}
+        >
           {editMode[params.id] ? (
             <>
               <Tooltip title="Save" placement="top">
@@ -310,7 +345,7 @@ export default function TableDataCars() {
                   icon={
                     <FaSave
                       className="text-blue-500"
-                      style={{ fontSize: "1.5rem" }}
+                      style={{ fontSize: "1rem" }}
                     />
                   }
                   label="Save"
@@ -323,7 +358,7 @@ export default function TableDataCars() {
                   icon={
                     <FaTimes
                       className="text-red-500"
-                      style={{ fontSize: "1.5rem" }}
+                      style={{ fontSize: "1rem" }}
                     />
                   }
                   label="Cancel"
@@ -338,8 +373,8 @@ export default function TableDataCars() {
                 <GridActionsCellItem
                   icon={
                     <FaEdit
-                      className="text-orange-500"
-                      style={{ fontSize: "1.5rem" }}
+                      className="text-yellow-500"
+                      style={{ fontSize: "1rem" }}
                     />
                   }
                   label="Edit"
@@ -352,7 +387,7 @@ export default function TableDataCars() {
                   icon={
                     <FaTrash
                       className="text-red-500"
-                      style={{ fontSize: "1.5rem" }}
+                      style={{ fontSize: "1rem" }}
                     />
                   }
                   label="Delete"

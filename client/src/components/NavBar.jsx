@@ -8,20 +8,16 @@ export default function NavBar() {
   const { auth, logout } = useContext(AuthContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
-  const dropdownRef = useRef(null); // Create a ref for the dropdown menu
-
+  const dropdownRef = useRef(null);
   useEffect(() => {
-    // Function to handle clicks outside of the dropdown
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
       }
     };
 
-    // Add event listener for clicks outside the dropdown
     document.addEventListener("mousedown", handleClickOutside);
 
-    // Cleanup event listener on component unmount
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -43,7 +39,7 @@ export default function NavBar() {
     } else {
       navigate("/dashboardUser");
     }
-    setIsDropdownOpen(false); // Close the dropdown after navigation
+    setIsDropdownOpen(false);
   }, [navigate]);
 
   return (

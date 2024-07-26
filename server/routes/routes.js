@@ -11,11 +11,7 @@ const {
   updateVehicleController,
   deleteVehicleController,
 } = require("../controllers/vehicleController");
-const {
-  getAllStations,
-  updateStations,
-  deleteStations,
-} = require("../models/stationModel");
+const { getAllStations } = require("../models/stationModel");
 
 const router = express.Router();
 
