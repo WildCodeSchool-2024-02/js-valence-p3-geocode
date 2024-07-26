@@ -72,9 +72,9 @@ export default function TableDataStations() {
   const { searchQuery } = useOutletContext();
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchStations = async () => {
       try {
-        const response = await fetch("http://localhost:3310/api/users", {
+        const response = await fetch("http://localhost:3310/api/stations", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -103,28 +103,34 @@ export default function TableDataStations() {
       }
     };
 
-    fetchUsers();
+    fetchStations();
   }, [searchQuery]);
 
-  const filteredRows = data.filter((user) =>
-    [user.firstName, user.lastName, user.email, user.gender, user.role].some(
-      (field) => field.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredRows = data.filter((station) =>
+    [
+      station.nom_amenageur,
+      station.nom_operateur,
+      station.nom_enseigne,
+      station.nom_station,
+      station.commune,
+    ].some((field) =>
+      field ? field.toLowerCase().includes(searchQuery.toLowerCase()) : false
     )
   );
 
-  const rows = filteredRows.map((user, index) => ({
+  const rows = filteredRows.map((station, index) => ({
     id: index + 1,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    gender: user.gender,
-    role: user.role,
+    nom_amenageur: station.nom_amenageur,
+    nom_operateur: station.nom_operateur,
+    nom_enseigne: station.nom_enseigne,
+    nom_station: station.nom_station,
+    commune: station.consolidated_commune,
   }));
 
   const columns = [
     {
       field: "id",
-      width: 80,
+      width: 100,
       headerName: "ID",
       renderCell: (params) => (
         <div
@@ -142,42 +148,42 @@ export default function TableDataStations() {
       ),
     },
     {
-      field: "firstName",
-      headerName: "First Name",
-      width: 150,
+      field: "nom_amenageur",
+      headerName: "Nom Amenageur",
+      width: 200,
       renderCell: (params) => (
         <div style={{ color: "lightgray" }}>{params.value}</div>
       ),
     },
     {
-      field: "lastName",
-      headerName: "Last Name",
-      width: 150,
+      field: "nom_operateur",
+      headerName: "Nom Operateur",
+      width: 200,
       renderCell: (params) => (
         <div style={{ color: "lightgray" }}>{params.value}</div>
       ),
     },
     {
-      field: "email",
-      headerName: "Email",
-      width: 250,
+      field: "nom_enseigne",
+      headerName: "Nom Enseigne",
+      width: 200,
+      renderCell: (params) => (
+        <div style={{ color: "lightgray" }}>{params.value}</div>
+      ),
+    },
+    {
+      field: "nom_station",
+      headerName: "Nom Station",
+      width: 300,
       headerAlign: "center",
       renderCell: (params) => (
         <div style={{ color: "lightgray" }}>{params.value}</div>
       ),
     },
     {
-      field: "gender",
-      headerName: "Gender",
-      width: 100,
-      renderCell: (params) => (
-        <div style={{ color: "lightgray" }}>{params.value}</div>
-      ),
-    },
-    {
-      field: "role",
-      headerName: "Role",
-      width: 100,
+      field: "commune",
+      headerName: "Commune",
+      width: 200,
       renderCell: (params) => (
         <div style={{ color: "lightgray" }}>{params.value}</div>
       ),
@@ -228,6 +234,7 @@ export default function TableDataStations() {
             autoHeight
             pagination
             paginationModel={paginationModel}
+            pageSizeOptions={[5, 8, 10, 20]}
             onPaginationModelChange={setPaginationModel}
             hideFooterSelectedRowCount
           />

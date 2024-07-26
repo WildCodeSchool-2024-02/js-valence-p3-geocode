@@ -122,7 +122,7 @@ export default function TableData() {
   const columns = [
     {
       field: "id",
-      width: 80,
+      width: 100,
       headerName: "ID",
       renderCell: (params) => (
         <div
@@ -142,7 +142,7 @@ export default function TableData() {
     {
       field: "firstName",
       headerName: "First Name",
-      width: 150,
+      width: 200,
       renderCell: (params) => (
         <div style={{ color: "lightgray" }}>{params.value}</div>
       ),
@@ -150,7 +150,7 @@ export default function TableData() {
     {
       field: "lastName",
       headerName: "Last Name",
-      width: 150,
+      width: 200,
       renderCell: (params) => (
         <div style={{ color: "lightgray" }}>{params.value}</div>
       ),
@@ -158,7 +158,7 @@ export default function TableData() {
     {
       field: "email",
       headerName: "Email",
-      width: 250,
+      width: 300,
       headerAlign: "center",
       renderCell: (params) => (
         <div style={{ color: "lightgray" }}>{params.value}</div>
@@ -167,7 +167,7 @@ export default function TableData() {
     {
       field: "gender",
       headerName: "Gender",
-      width: 100,
+      width: 200,
       renderCell: (params) => (
         <div style={{ color: "lightgray" }}>{params.value}</div>
       ),
@@ -175,7 +175,7 @@ export default function TableData() {
     {
       field: "role",
       headerName: "Role",
-      width: 100,
+      width: 200,
       renderCell: (params) => (
         <div style={{ color: "lightgray" }}>{params.value}</div>
       ),
@@ -213,6 +213,7 @@ export default function TableData() {
           columns={columns}
           autoHeight
           pagination
+          pageSizeOptions={[5, 8, 10, 20]}
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           hideFooterSelectedRowCount
