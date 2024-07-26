@@ -64,8 +64,7 @@ function Register() {
 
       if (response.ok) {
         const data = await response.json();
-        console.info("User created successfully");
-        localStorage.setItem("id_login_user", data.id_login_user);
+        console.info("User created successfully", data);
         navigate("/map");
       } else {
         const errorData = await response.json();

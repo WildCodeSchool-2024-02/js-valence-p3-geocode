@@ -62,7 +62,7 @@ const theme = createTheme({
   },
 });
 
-export default function TableDataStations() {
+export default function TableDataUsers() {
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 8,
@@ -72,9 +72,9 @@ export default function TableDataStations() {
   const { searchQuery } = useOutletContext();
 
   useEffect(() => {
-    const fetchStations = async () => {
+    const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:3310/api/stations", {
+        const response = await fetch("http://localhost:3310/api/users", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -90,11 +90,9 @@ export default function TableDataStations() {
         const fetchedData = await response.json();
         if (Array.isArray(fetchedData.data)) {
           setData(fetchedData.data);
-          setErrors(null);
         } else {
           setData([]);
           console.error("Fetched data is not an array:", fetchedData);
-          setErrors("Fetched data is not in the expected format.");
         }
       } catch (error) {
         console.error("Error:", error);
@@ -103,28 +101,22 @@ export default function TableDataStations() {
       }
     };
 
-    fetchStations();
-  }, [searchQuery]);
+    fetchUsers();
+  }, []);
 
-  const filteredRows = data.filter((station) =>
-    [
-      station.nom_amenageur,
-      station.nom_operateur,
-      station.nom_enseigne,
-      station.nom_station,
-      station.commune,
-    ].some((field) =>
-      field ? field.toLowerCase().includes(searchQuery.toLowerCase()) : false
+  const filteredRows = data.filter((user) =>
+    [user.firstName, user.lastName, user.email, user.gender, user.role].some(
+      (field) => field.toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
 
-  const rows = filteredRows.map((station, index) => ({
+  const rows = filteredRows.map((user, index) => ({
     id: index + 1,
-    nom_amenageur: station.nom_amenageur,
-    nom_operateur: station.nom_operateur,
-    nom_enseigne: station.nom_enseigne,
-    nom_station: station.nom_station,
-    commune: station.consolidated_commune,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    gender: user.gender,
+    role: user.role,
   }));
 
   const columns = [
@@ -148,32 +140,24 @@ export default function TableDataStations() {
       ),
     },
     {
-      field: "nom_amenageur",
-      headerName: "Nom Amenageur",
+      field: "firstName",
+      headerName: "First Name",
       width: 200,
       renderCell: (params) => (
         <div style={{ color: "lightgray" }}>{params.value}</div>
       ),
     },
     {
-      field: "nom_operateur",
-      headerName: "Nom Operateur",
+      field: "lastName",
+      headerName: "Last Name",
       width: 200,
       renderCell: (params) => (
         <div style={{ color: "lightgray" }}>{params.value}</div>
       ),
     },
     {
-      field: "nom_enseigne",
-      headerName: "Nom Enseigne",
-      width: 200,
-      renderCell: (params) => (
-        <div style={{ color: "lightgray" }}>{params.value}</div>
-      ),
-    },
-    {
-      field: "nom_station",
-      headerName: "Nom Station",
+      field: "email",
+      headerName: "Email",
       width: 300,
       headerAlign: "center",
       renderCell: (params) => (
@@ -181,8 +165,16 @@ export default function TableDataStations() {
       ),
     },
     {
-      field: "commune",
-      headerName: "Commune",
+      field: "gender",
+      headerName: "Gender",
+      width: 200,
+      renderCell: (params) => (
+        <div style={{ color: "lightgray" }}>{params.value}</div>
+      ),
+    },
+    {
+      field: "role",
+      headerName: "Role",
       width: 200,
       renderCell: (params) => (
         <div style={{ color: "lightgray" }}>{params.value}</div>
@@ -203,8 +195,8 @@ export default function TableDataStations() {
             height: "100%",
           }}
         >
-          <FaEdit style={{ cursor: "pointer", color: "orange" }} />
-          <FaTrash style={{ cursor: "pointer", color: "red" }} />
+          <FaEdit className="text-yellow-500" style={{ fontSize: "1rem" }} />{" "}
+          <FaTrash className="text-red-500" style={{ fontSize: "1rem" }} />{" "}
         </div>
       ),
     },
@@ -216,29 +208,16 @@ export default function TableDataStations() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className="App">
-        {errors ? (
-          <div
-            style={{
-              padding: "20px",
-              color: "red",
-              textAlign: "center",
-              fontWeight: "bold",
-            }}
-          >
-            {errors}
-          </div>
-        ) : (
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            autoHeight
-            pagination
-            paginationModel={paginationModel}
-            pageSizeOptions={[5, 8, 10, 20]}
-            onPaginationModelChange={setPaginationModel}
-            hideFooterSelectedRowCount
-          />
-        )}
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          autoHeight
+          pagination
+          pageSizeOptions={[5, 8, 10, 20]}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
+          hideFooterSelectedRowCount
+        />
       </div>
     </ThemeProvider>
   );
