@@ -31,5 +31,5 @@ const getStationsInformations = async (north, south, east, west) => {
   return { data: stations, error };
 };
 
-module.exports = { getAllStation,getStationsInformations };
+module.exports = { getAllStations,getStationsInformations };
 
