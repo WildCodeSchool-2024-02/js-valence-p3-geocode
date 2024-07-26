@@ -10,14 +10,14 @@ const createBooking = async ({
   cost,
 }) => {
   console.info("Creating booking with data:", {
-    user_id: Number(userID), // Utiliser userID dans le code
+    user_id: Number(userID), 
     stationID,
     createAt,
     dateReservation,
     checkIn,
     checkOut,
     cost,
-  }); // Debug log
+  }); 
 
   try {
     const { data, error } = await supabase
@@ -25,7 +25,7 @@ const createBooking = async ({
       .from("booking")
       .insert([
         {
-          user_id: Number(userID), // Convertir userID en user_id
+          user_id: Number(userID),
           stationID,
           createAt,
           dateReservation,
@@ -34,23 +34,23 @@ const createBooking = async ({
           cost,
         },
       ])
-      .select(); // Ajoutez ceci pour retourner les données insérées
+      .select(); 
 
     if (error) {
-      console.error("Error inserting booking:", error); // Debug log détaillé
+      console.error("Error inserting booking:", error);
       if (error.message) {
-        console.error("Detailed error message:", error.message); // Message d'erreur détaillé
+        console.error("Detailed error message:", error.message);
       }
       if (error.hint) {
-        console.error("Error hint:", error.hint); // Indice d'erreur, si disponible
+        console.error("Error hint:", error.hint);
       }
     } else {
-      console.info("Booking inserted successfully:", data); // Debug log
+      console.info("Booking inserted successfully:", data);
     }
 
     return { data, error };
   } catch (err) {
-    console.error("Unexpected error inserting booking:", err); // Log des erreurs inattendues
+    console.error("Unexpected error inserting booking:", err);
     return { data: null, error: err };
   }
 };
@@ -65,20 +65,20 @@ const getBookingById = async (id) => {
       .single();
 
     if (error) {
-      console.error("Error fetching booking:", error); // Debug log
+      console.error("Error fetching booking:", error);
       if (error.message) {
-        console.error("Detailed error message:", error.message); // Message d'erreur détaillé
+        console.error("Detailed error message:", error.message); 
       }
       if (error.hint) {
-        console.error("Error hint:", error.hint); // Indice d'erreur, si disponible
+        console.error("Error hint:", error.hint); 
       }
     } else {
-      console.info("Booking fetched successfully:", data); // Debug log
+      console.info("Booking fetched successfully:", data); 
     }
 
     return { data, error };
   } catch (err) {
-    console.error("Unexpected error fetching booking:", err); // Log des erreurs inattendues
+    console.error("Unexpected error fetching booking:", err);
     return { data: null, error: err };
   }
 };
@@ -89,23 +89,23 @@ const getBookingsByUserIdModel = async (userId) => {
       .schema("geocode")
       .from("booking")
       .select("*")
-      .eq("user_id", userId); // Assurez-vous d'utiliser le bon champ pour l'ID utilisateur
+      .eq("user_id", userId); 
 
     if (error) {
-      console.error("Error fetching bookings:", error); // Debug log
+      console.error("Error fetching bookings:", error); 
       if (error.message) {
-        console.error("Detailed error message:", error.message); // Message d'erreur détaillé
+        console.error("Detailed error message:", error.message);
       }
       if (error.hint) {
-        console.error("Error hint:", error.hint); // Indice d'erreur, si disponible
+        console.error("Error hint:", error.hint); 
       }
     } else {
-      console.info("Bookings fetched successfully:", data); // Debug log
+      console.info("Bookings fetched successfully:", data);
     }
 
     return { data, error };
   } catch (err) {
-    console.error("Unexpected error fetching bookings:", err); // Log des erreurs inattendues
+    console.error("Unexpected error fetching bookings:", err);
     return { data: null, error: err };
   }
 };
