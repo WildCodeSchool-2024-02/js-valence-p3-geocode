@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -89,7 +89,7 @@ function TableDataUsers() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [originalRowData, setOriginalRowData] = useState({});
-
+console.info(errors,editMode);
   const fetchUsers = async () => {
     try {
       const response = await fetch("http://localhost:3310/api/users", {
