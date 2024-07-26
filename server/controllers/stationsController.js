@@ -14,12 +14,11 @@ const browseStations = async (req, res, next) => {
       console.error("Error fetching stations informations:", error);
       return res.status(500).json({ error: error.message });
     }
-    console.info("Stations data to be sent:", data);
+    console.log("Stations data to be sent:", data);
     return res.json(data);
   } catch (err) {
     console.error("Internal server error:", err);
     return next(err);
   }
 };
-
 module.exports = { browseStations };
