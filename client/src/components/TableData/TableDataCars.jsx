@@ -94,7 +94,7 @@ export default function TableDataCars() {
 
   const fetchCars = async () => {
     try {
-      const response = await fetch("http://localhost:3310/api/vehicle", {
+      const response = await fetch("http://localhost:3310/api/vehicles", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +129,7 @@ export default function TableDataCars() {
   const processRowUpdate = async (newRow, oldRow) => {
     try {
       const response = await fetch(
-        `http://localhost:3310/api/vehicle/${newRow.id}`,
+        `http://localhost:3310/api/vehicles/${newRow.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -169,7 +169,7 @@ export default function TableDataCars() {
 
     try {
       const response = await fetch(
-        `http://localhost:3310/api/vehicle/${vehicleToDelete}`,
+        `http://localhost:3310/api/vehicles/${vehicleToDelete}`,
         { method: "DELETE" }
       );
 

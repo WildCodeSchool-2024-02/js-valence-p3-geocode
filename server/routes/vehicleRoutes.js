@@ -16,7 +16,7 @@ router.get("/:userId", getUserVehicles);
 router.post("/", addUserVehicle);
 router.put("/:id", updateUserVehicle);
 router.delete("/:id", deleteUserVehicle);
-router.get("/vehicle", getAllVehiclesController);
+router.get("/", getAllVehiclesController);
 router.put("/vehicle/:id", updateVehicleController);
 router.delete("/vehicle/:id", deleteVehicleController);
 

@@ -38,9 +38,9 @@ export default function NavBar() {
   const handleProfileClick = useCallback(() => {
     const role = localStorage.getItem("role") || "User";
     if (role === "Admin") {
-      navigate("/dashboardAdmin");
+      navigate("/dashboardAdmin/users");
     } else {
-      navigate("/dashboardUser");
+      navigate("/dashboardUser/information");
     }
     setIsDropdownOpen(false);
   }, [navigate]);
@@ -120,3 +120,4 @@ export default function NavBar() {
     </div>
   );
 }
+

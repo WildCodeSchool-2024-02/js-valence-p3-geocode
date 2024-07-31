@@ -1,9 +1,18 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { FaInfoCircle, FaCar, FaBook, FaSignOutAlt } from "react-icons/fa";
+import { useState, useContext, useCallback } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import {
+  FaInfoCircle,
+  FaCar,
+  FaBook,
+  FaSignOutAlt,
+  FaHome,
+} from "react-icons/fa";
+import { AuthContext } from "../../components/AuthContext";
 
 function Sidebar() {
   const [image, setImage] = useState(null);
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -16,9 +25,20 @@ function Sidebar() {
     }
   };
 
+  const handleLogout = useCallback(() => {
+    logout();
+    navigate("/login");
+  }, [logout, navigate]);
+
   return (
     <div className="bg-gray-800 w-64 min-h-screen flex flex-col justify-between items-center p-4">
       <div className="flex flex-col items-center pt-8 space-y-8">
+        <NavLink
+          to="/"
+          className="flex items-center justify-center w-full mb-8"
+        >
+          <FaHome className="text-white text-4xl" />
+        </NavLink>
         <div className="relative bg-gray-600 rounded-full h-32 w-32">
           <input
             type="file"
@@ -66,9 +86,12 @@ function Sidebar() {
       </div>
       <button
         type="button"
-        className="w-full flex items-center justify-center text-white py-2 px-4 rounded-lg hover:text-gray-400 mb-4"
+        className="flex items-center w-full px-4 py-2 mb-6 text-white rounded-lg hover:bg-red-500"
+        onClick={handleLogout}
+        aria-label="Log out"
       >
-        <FaSignOutAlt className="mr-2" /> Log Out
+        Log Out
+        <FaSignOutAlt className="ml-2" />
       </button>
     </div>
   );

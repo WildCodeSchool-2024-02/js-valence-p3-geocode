@@ -3,7 +3,6 @@ const { getStationsInformations } = require("../models/stationModel");
 const browseStations = async (req, res, next) => {
   try {
     const { north, south, east, west } = req.query;
-    console.info("Request received for /stations with bounds:", req.query);
     const { data, error } = await getStationsInformations(
       north,
       south,
@@ -14,10 +13,8 @@ const browseStations = async (req, res, next) => {
       console.error("Error fetching stations informations:", error);
       return res.status(500).json({ error: error.message });
     }
-    console.log("Stations data to be sent:", data);
     return res.json(data);
   } catch (err) {
-    console.error("Internal server error:", err);
     return next(err);
   }
 };
