@@ -76,38 +76,38 @@ function BooksUser() {
   };
 
   return (
-    <div className="bg-[#2D2D37] rounded-lg p-8">
-      <h2 className="text-xl font-bold text-white mb-4">Books Dashboard</h2>
+    <div className="bg-gray-50 text-gray-900 rounded-lg p-8">
+      <h2 className="text-xl font-bold mb-4">Books Dashboard</h2>
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-[#1C1C24] text-white">
+        <table className="min-w-full bg-white shadow rounded-lg">
           <thead>
             <tr>
-              <th className="py-2 px-4 border-b border-gray-700">Station ID</th>
-              <th className="py-2 px-4 border-b border-gray-700">Date</th>
-              <th className="py-2 px-4 border-b border-gray-700">Check In</th>
-              <th className="py-2 px-4 border-b border-gray-700">Check Out</th>
-              <th className="py-2 px-4 border-b border-gray-700">Actions</th>
+              <th className="py-2 px-4 border-b border-gray-300">Station ID</th>
+              <th className="py-2 px-4 border-b border-gray-300">Date</th>
+              <th className="py-2 px-4 border-b border-gray-300">Check In</th>
+              <th className="py-2 px-4 border-b border-gray-300">Check Out</th>
+              <th className="py-2 px-4 border-b border-gray-300">Actions</th>
             </tr>
           </thead>
           <tbody>
             {bookings.map((booking) => (
               <tr key={booking.id}>
-                <td className="py-2 px-4 border-b border-gray-700">
+                <td className="py-2 px-4 border-b border-gray-300">
                   {booking.stationID}
                 </td>
-                <td className="py-2 px-4 border-b border-gray-700">
+                <td className="py-2 px-4 border-b border-gray-300">
                   {booking.dateReservation}
                 </td>
-                <td className="py-2 px-4 border-b border-gray-700">
+                <td className="py-2 px-4 border-b border-gray-300">
                   {booking.checkIn}
                 </td>
-                <td className="py-2 px-4 border-b border-gray-700">
+                <td className="py-2 px-4 border-b border-gray-300">
                   {booking.checkOut}
                 </td>
-                <td className="py-2 px-4 border-b border-gray-700">
+                <td className="py-2 px-4 border-b border-gray-300">
                   <button
                     type="button"
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
                     onClick={() => openModal(booking.id)}
                   >
                     Cancel
@@ -132,14 +132,14 @@ function BooksUser() {
           <div className="flex justify-end">
             <button
               type="button"
-              className="px-4 py-2 mr-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+              className="px-4 py-2 mr-2 bg-gray-500 text-white rounded hover:bg-gray-700"
               onClick={closeModal}
             >
               No
             </button>
             <button
               type="button"
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
               onClick={handleCancelBooking}
             >
               Yes, Cancel

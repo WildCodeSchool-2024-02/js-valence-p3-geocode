@@ -48,7 +48,7 @@ export default function LogIn() {
         if (decodedToken.role === "Admin") {
           navigate("/dashboardAdmin");
         } else {
-          navigate("/contact");
+          navigate("/Map");
         }
       } else {
         const errorData = await response.json();

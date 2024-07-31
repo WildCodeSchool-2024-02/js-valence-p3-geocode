@@ -17,7 +17,6 @@ function Sidebar({ selectedStation, closeSidebar }) {
 
   useEffect(() => {
     console.info("Selected Station data:", selectedStation);
-    toast.info("Component loaded successfully!", { autoClose: 1000 });
   }, [selectedStation]);
 
   const handleDateChange = (date) => {
@@ -121,36 +120,36 @@ function Sidebar({ selectedStation, closeSidebar }) {
           onClick={closeSidebar}
         />
       </div>
-      <h2 className="text-2xl font-bold mb-2">
+      <h2 className="mb-2 text-2xl font-bold">
         {selectedStation.nom_station || "N/A"}
       </h2>
-      <div className="mb-2 flex items-center">
-        <FaMapMarkerAlt className="text-xl mr-2 text-gray-400" />
+      <div className="flex items-center mb-2">
+        <FaMapMarkerAlt className="mr-2 text-xl text-gray-400" />
         <p className="text-lg">
           <strong>Adresse:</strong> {selectedStation.adresse_station || "N/A"}
         </p>
       </div>
-      <div className="mb-2 flex items-center">
-        <FaClock className="text-xl mr-2 text-gray-400" />
+      <div className="flex items-center mb-2">
+        <FaClock className="mr-2 text-xl text-gray-400" />
         <p className="text-lg">
           <strong>Horaires:</strong> {selectedStation.horaires || "N/A"}
         </p>
       </div>
-      <div className="mb-2 flex items-center">
-        <FaPhone className="text-xl mr-2 text-gray-400" />
+      <div className="flex items-center mb-2">
+        <FaPhone className="mr-2 text-xl text-gray-400" />
         <p className="text-lg">
           <strong>Contact:</strong> {selectedStation.contact_operateur || "N/A"}
         </p>
       </div>
-      <div className="mb-2 flex items-center">
-        <FaPhone className="text-xl mr-2 text-gray-400" />
+      <div className="flex items-center mb-2">
+        <FaPhone className="mr-2 text-xl text-gray-400" />
         <p className="text-lg">
           <strong>Téléphone:</strong>{" "}
           {selectedStation.telephone_operateur || "N/A"}
         </p>
       </div>
-      <div className="mb-2 flex items-center">
-        <FaInfoCircle className="text-xl mr-2 text-gray-400" />
+      <div className="flex items-center mb-2">
+        <FaInfoCircle className="mr-2 text-xl text-gray-400" />
         <p className="text-lg">
           <strong>Conditions d'accès:</strong>{" "}
           {selectedStation.condition_acces || "N/A"}
@@ -187,7 +186,7 @@ function Sidebar({ selectedStation, closeSidebar }) {
           </div>
         </div>
       ) : (
-        <p className="text-red-500 mt-4">Cette borne n'est pas réservable.</p>
+        <p className="mt-4 text-red-500">Cette borne n'est pas réservable.</p>
       )}
     </div>
   );

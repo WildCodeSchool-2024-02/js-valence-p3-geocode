@@ -104,7 +104,7 @@ const router = createBrowserRouter([
       },
       {
         path: "information",
-        element: <InformationsUser />,
+        element: <InformationsUser />
       },
     ],
   },

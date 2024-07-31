@@ -64,15 +64,24 @@ const deleteUser = async (userId) => {
   return { data, error };
 };
 const updateUser = async (userId, updatedData) => {
+  console.info("updateUser - userId:", userId);
+  console.info("updateUser - updatedData:", updatedData);
+
   const { data, error } = await supabase
     .schema("geocode")
     .from("user")
     .update(updatedData)
     .eq("user_id", userId)
     .select();
-  return { data, error };
-};
 
+  if (error) {
+    console.error("updateUser - error:", error.message);
+    throw new Error(error.message);
+  }
+
+  console.info("updateUser - data:", data);
+  return { data, error }; // Assurez-vous de renvoyer les deux valeurs
+};
 module.exports = {
   createUser,
   getUserByEmail,

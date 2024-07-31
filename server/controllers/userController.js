@@ -120,11 +120,19 @@ const deleteUserById = async (req, res) => {
 const updateUserById = async (req, res) => {
   const { id } = req.params;
   const updatedData = req.body;
-  const { data, error } = await updateUser(id, updatedData);
-  if (error) {
-    return res.status(400).json({ error: error.message });
+  try {
+    const { data, error } = await updateUser(id, updatedData);
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+    if (!data || data.length === 0) {
+      return res.status(500).json({ error: "No data returned from server" });
+    }
+    return res.status(200).json({ data: data[0] });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
-  return res.status(200).json({ data });
 };
 
 module.exports = {

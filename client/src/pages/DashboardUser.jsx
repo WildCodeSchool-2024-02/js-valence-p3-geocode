@@ -4,11 +4,11 @@ import Header from "./dashboardUser/Header";
 
 function DashboardUser() {
   return (
-    <div className="bg-gray-100 dark:bg-gray-900  flex flex-col">
-      <Header />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
-        <div className="flex-1 p-8 overflow-auto">
+    <div className="flex h-screen">
+      <Sidebar />
+      <div className="flex flex-col flex-grow">
+        <Header />
+        <div className="flex-1 p-8 overflow-auto bg-gray-100 dark:bg-gray-900">
           <Outlet />
         </div>
       </div>

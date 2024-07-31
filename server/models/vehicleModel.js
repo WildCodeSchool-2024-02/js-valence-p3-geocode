@@ -79,11 +79,6 @@ const deleteVehicleUser = async (id) => {
     .delete()
     .eq("id", id)
     .select();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
   return { data, error };
 };
 

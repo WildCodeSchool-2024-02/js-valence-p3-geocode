@@ -1,16 +1,23 @@
 const express = require("express");
+
 const {
   getUserVehicles,
-  addVehicle,
-  updateVehicle,
-  deleteVehicle,
+  addUserVehicle,
+  updateUserVehicle,
+  deleteUserVehicle,
+  getAllVehiclesController,
+  updateVehicleController,
+  deleteVehicleController,
 } = require("../controllers/vehicleController");
 
 const router = express.Router();
 
 router.get("/:userId", getUserVehicles);
-router.post("/", addVehicle);
-router.put("/:id", updateVehicle);
-router.delete("/:id", deleteVehicle);
+router.post("/", addUserVehicle);
+router.put("/:id", updateUserVehicle);
+router.delete("/:id", deleteUserVehicle);
+router.get("/", getAllVehiclesController);
+router.put("/vehicle/:id", updateVehicleController);
+router.delete("/vehicle/:id", deleteVehicleController);
 
 module.exports = router;
