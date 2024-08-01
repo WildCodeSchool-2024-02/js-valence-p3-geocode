@@ -13,9 +13,10 @@ const browseStations = async (req, res, next) => {
       console.error("Error fetching stations informations:", error);
       return res.status(500).json({ error: error.message });
     }
-    return res.json(data);
+    return res.json({ data });
   } catch (err) {
     return next(err);
   }
 };
+
 module.exports = { browseStations };

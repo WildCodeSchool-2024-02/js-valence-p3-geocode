@@ -45,7 +45,7 @@ const getVehiclesByUserId = async (userId) => {
   const { data, error } = await supabase
     .schema("geocode")
     .from("vehicle")
-    .select("*")
+    .select("*, power_charge, battery_capacity")
     .eq("user_id", userId);
 
   return { data, error };

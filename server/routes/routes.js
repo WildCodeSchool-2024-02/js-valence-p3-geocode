@@ -20,6 +20,7 @@ router.get("/users", getAllUsers);
 router.get("/users/:id", getUserByIdController);
 router.delete("/users/:id", deleteUserById);
 router.put("/users/:id", updateUserById);
+
 router.get("/stations", getAllStations);
 
 module.exports = router;

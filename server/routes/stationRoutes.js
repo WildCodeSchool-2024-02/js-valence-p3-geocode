@@ -3,6 +3,6 @@ const { browseStations } = require("../controllers/stationsController");
 
 const router = express.Router();
 
-router.get("/stations", browseStations);
+router.get("/stations/bbox", browseStations);
 
 module.exports = router;

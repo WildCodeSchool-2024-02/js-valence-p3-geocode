@@ -12,6 +12,8 @@ function CarsUser({ updateNumVehicles }) {
     model: "",
     picture: "",
     priseType: "",
+    power_charge: "",
+    battery_capacity: "",
   });
   const [editMode, setEditMode] = useState(null);
 
@@ -74,6 +76,8 @@ function CarsUser({ updateNumVehicles }) {
         model: "",
         picture: "",
         priseType: "",
+        power_charge: "",
+        battery_capacity: "",
       });
 
       updateNumVehicles();
@@ -180,6 +184,12 @@ function CarsUser({ updateNumVehicles }) {
               <h3 className="text-gray-900 font-semibold">{car.brand}</h3>
               <p className="text-gray-600">Model: {car.model}</p>
               <p className="text-gray-600">Type: {car.priseType}</p>
+              <p className="text-gray-600">
+                Power Charge: {car.power_charge} kW
+              </p>
+              <p className="text-gray-600">
+                Battery Capacity: {car.battery_capacity} kWh
+              </p>
             </div>
           ))}
         </div>
@@ -215,11 +225,35 @@ function CarsUser({ updateNumVehicles }) {
                     />
                     <input
                       type="text"
+                      name="picture"
+                      value={selectedCar.picture}
+                      onChange={handleCarInputChange}
+                      className="w-full p-2 mb-2 bg-gray-100 text-gray-900 rounded border border-gray-300"
+                      placeholder="Picture URL"
+                    />
+                    <input
+                      type="text"
                       name="priseType"
                       value={selectedCar.priseType}
                       onChange={handleCarInputChange}
                       className="w-full p-2 mb-2 bg-gray-100 text-gray-900 rounded border border-gray-300"
                       placeholder="Type"
+                    />
+                    <input
+                      type="number"
+                      name="power_charge"
+                      value={selectedCar.power_charge}
+                      onChange={handleCarInputChange}
+                      className="w-full p-2 mb-2 bg-gray-100 text-gray-900 rounded border border-gray-300"
+                      placeholder="Power Charge (kW)"
+                    />
+                    <input
+                      type="number"
+                      name="battery_capacity"
+                      value={selectedCar.battery_capacity}
+                      onChange={handleCarInputChange}
+                      className="w-full p-2 mb-2 bg-gray-100 text-gray-900 rounded border border-gray-300"
+                      placeholder="Battery Capacity (kWh)"
                     />
                   </div>
                 </div>
@@ -255,6 +289,12 @@ function CarsUser({ updateNumVehicles }) {
                     <p className="text-gray-600">Model: {selectedCar.model}</p>
                     <p className="text-gray-600">
                       Type: {selectedCar.priseType}
+                    </p>
+                    <p className="text-gray-600">
+                      Power Charge: {selectedCar.power_charge} kW
+                    </p>
+                    <p className="text-gray-600">
+                      Battery Capacity: {selectedCar.battery_capacity} kWh
                     </p>
                   </div>
                 </div>
@@ -312,6 +352,22 @@ function CarsUser({ updateNumVehicles }) {
             value={newCar.priseType}
             onChange={handleInputChange}
             placeholder="Type"
+            className="p-2 rounded bg-white text-gray-900 border border-gray-300"
+          />
+          <input
+            type="number"
+            name="power_charge"
+            value={newCar.power_charge}
+            onChange={handleInputChange}
+            placeholder="Power Charge (kW)"
+            className="p-2 rounded bg-white text-gray-900 border border-gray-300"
+          />
+          <input
+            type="number"
+            name="battery_capacity"
+            value={newCar.battery_capacity}
+            onChange={handleInputChange}
+            placeholder="Battery Capacity (kWh)"
             className="p-2 rounded bg-white text-gray-900 border border-gray-300"
           />
           <button
