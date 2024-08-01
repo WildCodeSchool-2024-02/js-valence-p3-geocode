@@ -1,22 +1,27 @@
-// Load environment variables from .env file
-require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
 
-// Check database connection
-// Note: This is optional and can be removed if the database connection
-// is not required when starting the application
-require("./database/client").checkConnection();
+const app = express();
+const userRoutes = require("./routes/routes");
+const bookingRoutes = require("./routes/bookingRoutes");
+const stationRoutes = require("./routes/stationRoutes");
+const vehicleRoutes = require("./routes/vehicleRoutes");
 
-// Import the Express application from app/config.js
-const app = require("./app/config");
 
-// Get the port from the environment variables
-const port = process.env.APP_PORT;
-
-// Start the server and listen on the specified port
-app
-  .listen(port, () => {
-    console.info(`Server is listening on port ${port}`);
+app.use(express.json());
+app.use(
+  cors({
+    origin: ["http://localhost:3310", "http://localhost:3000"],
   })
-  .on("error", (err) => {
-    console.error("Error:", err.message);
-  });
+);
+
+app.use("/api", userRoutes);
+app.use("/api", stationRoutes);
+app.use("/api", bookingRoutes);
+app.use("/api/vehicles", vehicleRoutes);
+
+
+const PORT = process.env.PORT || 3310;
+app.listen(PORT, () => {
+  console.info(`Server running on port: http://localhost:${PORT}`);
+});
