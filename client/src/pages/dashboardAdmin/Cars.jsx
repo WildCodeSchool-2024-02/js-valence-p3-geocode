@@ -1,4 +1,4 @@
-import TableDataCars from "../../components/TableData/TableDataCars";
+import TableDataCars from "../../components/TableData/TableCars";
 
 export default function Cars() {
   return (
