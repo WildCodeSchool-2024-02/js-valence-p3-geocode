@@ -58,7 +58,7 @@ export default function Table() {
         setDataUsers(updatedData);
 
         setSuccessMessage("User deleted successfully");
-        setTimeout(() => setSuccessMessage(""), 3000); // Hide message after 3 seconds
+        setTimeout(() => setSuccessMessage(""), 3000);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -85,7 +85,7 @@ export default function Table() {
   };
 
   const handleEditSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault();
     try {
       const response = await fetch(
         `http://localhost:3310/api/users/${editingUser.user_id}`,
@@ -110,7 +110,7 @@ export default function Table() {
 
       setEditingUser(null);
       setSuccessMessage("User updated successfully");
-      setTimeout(() => setSuccessMessage(""), 3000); // Hide message after 3 seconds
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
       setError(err.message);
     }
@@ -132,7 +132,7 @@ export default function Table() {
     if (pageNumber > totalPages) return;
     setCurrentPage(pageNumber);
   };
-
+  console.info(error);
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       {successMessage && (

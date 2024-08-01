@@ -26,6 +26,10 @@ export default function Statistics() {
   const [carColors, setCarColors] = useState([]);
   const [priceTypes, setPriceTypes] = useState([]);
   const [modelDistribution, setModelDistribution] = useState([]);
+
+  console.info(carColors);
+  console.info(priceTypes);
+
   useEffect(() => {
     const fetchData = async () => {
       try {

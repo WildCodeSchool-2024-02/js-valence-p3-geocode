@@ -5,7 +5,6 @@ export default function Table() {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6);
-  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const getAllStations = async () => {
@@ -63,14 +62,6 @@ export default function Table() {
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      {successMessage && (
-        <div
-          className="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg"
-          role="alert"
-        >
-          {successMessage}
-        </div>
-      )}
       <table className="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
