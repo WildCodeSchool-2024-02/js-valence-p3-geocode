@@ -5,7 +5,7 @@ const getStationsInformations = async (north, south, east, west) => {
     .schema("geocode")
     .from("stationsinformations")
     .select(
-      "stationID,nom_station, nom_amenageur, siren_amenageur, contact_amenageur, nom_operateur, contact_operateur, consolidated_longitude, consolidated_latitude, reservation, adresse_station, horaires, telephone_operateur, condition_acces"
+      "stationID, nom_station, nom_amenageur, siren_amenageur, contact_amenageur, nom_operateur, contact_operateur, consolidated_longitude, consolidated_latitude, reservation, adresse_station, horaires, telephone_operateur, condition_acces, puissance_nominale"
     )
     .filter("consolidated_latitude", "gte", south)
     .filter("consolidated_latitude", "lte", north)

@@ -80,7 +80,7 @@ const updateUser = async (userId, updatedData) => {
   }
 
   console.info("updateUser - data:", data);
-  return { data, error }; // Assurez-vous de renvoyer les deux valeurs
+  return { data, error }; 
 };
 module.exports = {
   createUser,

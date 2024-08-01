@@ -24,7 +24,7 @@ function Map() {
   const fetchStations = async (bbox) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/stations?north=${bbox[3]}&south=${bbox[1]}&east=${bbox[2]}&west=${bbox[0]}`
+        `${import.meta.env.VITE_API_URL}/api/stations/bbox?north=${bbox[3]}&south=${bbox[1]}&east=${bbox[2]}&west=${bbox[0]}`
       );
       const result = await response.json();
       console.info("Stations data fetched:", result);
@@ -54,6 +54,7 @@ function Map() {
           const markerElement = marker.getElement();
           markerElement.addEventListener("click", () => {
             console.info("Station clicked:", station);
+            console.info("Station ID:", station.stationID);
             setSelectedStation(station);
           });
           markers.current.push(marker);

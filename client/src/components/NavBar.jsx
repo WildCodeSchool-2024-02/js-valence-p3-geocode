@@ -6,7 +6,7 @@ import { navLinks } from "../constant/LandingPageConstant";
 
 export default function NavBar() {
   const location = useLocation();
-  const isMapPage = location.pathname === "/map";
+  const isMapPage = location.pathname.toLowerCase() === "/map";
   const { auth, logout } = useContext(AuthContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -71,7 +71,7 @@ export default function NavBar() {
                 key={link.id}
                 className="text-xl hover:bg-[#15803d] rounded-xl px-4 py-2 text-neutral-50"
               >
-                <NavLink to={`/${link.id}`}>{link.title}</NavLink>
+                <NavLink to={`/${link.id.toLowerCase()}`}>{link.title}</NavLink>
               </li>
             ))}
           {auth.isAuthenticated && (
@@ -120,4 +120,3 @@ export default function NavBar() {
     </div>
   );
 }
-
