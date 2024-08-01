@@ -168,7 +168,7 @@ export default function Table() {
             >
               {Object.keys(car)
                 .concat("Actions")
-                .map((key, idx) =>
+                .map((key) =>
                   key === "Actions" ? (
                     <td key={key} className="px-6 py-4 text-right">
                       <div className="flex space-x-2">
@@ -189,7 +189,7 @@ export default function Table() {
                       </div>
                     </td>
                   ) : (
-                    <td key={idx} className="px-6 py-4">
+                    <td key={key} className="px-6 py-4">
                       {car[key]}
                     </td>
                   )

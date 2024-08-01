@@ -165,7 +165,7 @@ export default function Table() {
                     : "bg-gray-200 dark:bg-gray-700"
                 } border-b dark:border-gray-700 hover:bg-green-900`}
               >
-                {headers.concat("Actions").map((key, idx) =>
+                {headers.concat("Actions").map((key) =>
                   key === "Actions" ? (
                     <td key={key} className="px-6 py-4 text-right">
                       <div className="flex space-x-2">
@@ -186,7 +186,7 @@ export default function Table() {
                       </div>
                     </td>
                   ) : (
-                    <td key={idx} className="max-w-xs px-6 py-4 truncate">
+                    <td key={key} className="max-w-xs px-6 py-4 truncate">
                       {user[key]}
                     </td>
                   )

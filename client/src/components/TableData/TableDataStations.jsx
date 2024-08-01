@@ -82,8 +82,8 @@ export default function Table() {
                   : "bg-gray-200 dark:bg-gray-700"
               } border-b dark:border-gray-700 hover:bg-gray-600`}
             >
-              {filterCol.map((key, idx) => (
-                <td key={idx} className="px-6 py-4">
+              {filterCol.map((key) => (
+                <td key={key} className="px-6 py-4">
                   {station[key]}
                 </td>
               ))}
