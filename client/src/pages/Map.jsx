@@ -7,8 +7,7 @@ import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import SearchBar from "../components/SearchBar";
 import Sidebar from "../components/Slidebar";
 
-mapboxgl.accessToken =
-  "pk.eyJ1Ijoia2FsZWRndXptYW4iLCJhIjoiY2x5ZmpqZG9oMDA5bzJscjJmZDlyeGdwdCJ9.JeVpoEFj5YZvHxc9T017dA";
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 function Map() {
   const mapContainer = useRef(null);

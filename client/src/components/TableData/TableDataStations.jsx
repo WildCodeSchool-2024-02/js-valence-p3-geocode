@@ -1,78 +1,14 @@
-import { useOutletContext } from "react-router-dom";
-import { DataGrid } from "@mui/x-data-grid";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import { useState, useEffect } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
-const theme = createTheme({
-  components: {
-    MuiDataGrid: {
-      styleOverrides: {
-        root: {
-          "& .MuiDataGrid-columnHeader": {
-            backgroundColor: "#2d3748",
-            color: "lightgray",
-            "&:hover": {
-              backgroundColor: "#2d3748",
-            },
-          },
-          "& .MuiDataGrid-cell": {
-            color: "lightgray",
-          },
-          "& .MuiDataGrid-row": {
-            "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-            },
-          },
-          "& .MuiDataGrid-sortIcon": {
-            color: "lightgray",
-          },
-          "& .MuiDataGrid-filterIcon": {
-            color: "lightgray",
-          },
-          "& .MuiDataGrid-columnSeparator": {
-            color: "lightgray",
-          },
-          "& .MuiDataGrid-toolbarContainer": {
-            color: "lightgray",
-          },
-          "& .MuiDataGrid-footerCell": {
-            color: "lightgray",
-          },
-        },
-      },
-    },
-    MuiTablePagination: {
-      styleOverrides: {
-        root: {
-          color: "lightgray",
-        },
-        selectIcon: {
-          color: "lightgray",
-        },
-        toolbar: {
-          "& .MuiTablePagination-caption, & .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows, & .MuiTablePagination-select, & .MuiTablePagination-actions button":
-            {
-              color: "lightgray",
-            },
-        },
-      },
-    },
-  },
-});
-
-export default function TableDataStations() {
-  const [paginationModel, setPaginationModel] = useState({
-    page: 0,
-    pageSize: 8,
-  });
-  const [data, setData] = useState([]);
-  const [errors, setErrors] = useState(null);
-  const { searchQuery } = useOutletContext();
+export default function Table() {
+  const [dataStations, setDataStations] = useState([]);
+  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(6);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    const fetchStations = async () => {
+    const getAllStations = async () => {
       try {
         const response = await fetch("http://localhost:3310/api/stations", {
           method: "GET",
@@ -82,164 +18,110 @@ export default function TableDataStations() {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Error:", errorData);
-          throw new Error(errorData.message || "Failed to fetch...");
+          throw new Error("Failed to fetch stations.");
         }
 
-        const fetchedData = await response.json();
-        if (Array.isArray(fetchedData.data)) {
-          setData(fetchedData.data);
-          setErrors(null);
-        } else {
-          setData([]);
-          console.error("Fetched data is not an array:", fetchedData);
-          setErrors("Fetched data is not in the expected format.");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setErrors(error.message || "Failed to fetch. Please try again.");
-        setData([]);
+        const data = await response.json();
+        setDataStations(data.data || []);
+      } catch (err) {
+        setError(err.message);
       }
     };
 
-    fetchStations();
-  }, [searchQuery]);
+    getAllStations();
+  }, []);
 
-  const filteredRows = data.filter((station) =>
-    [
-      station.nom_amenageur,
-      station.nom_operateur,
-      station.nom_enseigne,
-      station.nom_station,
-      station.commune,
-    ].some((field) =>
-      field ? field.toLowerCase().includes(searchQuery.toLowerCase()) : false
-    )
-  );
+  const totalPages = Math.ceil(dataStations.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentData = dataStations.slice(startIndex, startIndex + itemsPerPage);
 
-  const rows = filteredRows.map((station, index) => ({
-    id: index + 1,
-    nom_amenageur: station.nom_amenageur,
-    nom_operateur: station.nom_operateur,
-    nom_enseigne: station.nom_enseigne,
-    nom_station: station.nom_station,
-    commune: station.consolidated_commune,
-  }));
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber < 1) return;
+    if (pageNumber > totalPages) return;
+    setCurrentPage(pageNumber);
+  };
 
-  const columns = [
-    {
-      field: "id",
-      width: 100,
-      headerName: "ID",
-      renderCell: (params) => (
-        <div
-          style={{
-            color: "lightgray",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          {params.value}
-        </div>
-      ),
-    },
-    {
-      field: "nom_amenageur",
-      headerName: "Nom Amenageur",
-      width: 200,
-      renderCell: (params) => (
-        <div style={{ color: "lightgray" }}>{params.value}</div>
-      ),
-    },
-    {
-      field: "nom_operateur",
-      headerName: "Nom Operateur",
-      width: 200,
-      renderCell: (params) => (
-        <div style={{ color: "lightgray" }}>{params.value}</div>
-      ),
-    },
-    {
-      field: "nom_enseigne",
-      headerName: "Nom Enseigne",
-      width: 200,
-      renderCell: (params) => (
-        <div style={{ color: "lightgray" }}>{params.value}</div>
-      ),
-    },
-    {
-      field: "nom_station",
-      headerName: "Nom Station",
-      width: 300,
-      headerAlign: "center",
-      renderCell: (params) => (
-        <div style={{ color: "lightgray" }}>{params.value}</div>
-      ),
-    },
-    {
-      field: "commune",
-      headerName: "Commune",
-      width: 200,
-      renderCell: (params) => (
-        <div style={{ color: "lightgray" }}>{params.value}</div>
-      ),
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 300,
-      headerAlign: "center",
-      renderCell: () => (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-around",
-            alignItems: "center",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <FaEdit style={{ cursor: "pointer", color: "orange" }} />
-          <FaTrash style={{ cursor: "pointer", color: "red" }} />
-        </div>
-      ),
-    },
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
+  if (!dataStations.length) {
+    return <p>Loading...</p>;
+  }
+
+  const filterCol = [
+    "siren_amenageur",
+    "contact_amenageur",
+    "nom_operateur",
+    "nom_station",
+    "implantation_station",
+    "adresse_station",
+    "reservation",
   ];
 
-  console.info(errors);
+  const headers = filterCol;
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <div className="App">
-        {errors ? (
-          <div
-            style={{
-              padding: "20px",
-              color: "red",
-              textAlign: "center",
-              fontWeight: "bold",
-            }}
-          >
-            {errors}
-          </div>
-        ) : (
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            autoHeight
-            pagination
-            paginationModel={paginationModel}
-            pageSizeOptions={[5, 8, 10, 20]}
-            onPaginationModelChange={setPaginationModel}
-            hideFooterSelectedRowCount
-          />
-        )}
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      {successMessage && (
+        <div
+          className="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg"
+          role="alert"
+        >
+          {successMessage}
+        </div>
+      )}
+      <table className="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            {headers.map((header) => (
+              <th key={header} scope="col" className="px-6 py-3">
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {currentData.map((station, index) => (
+            <tr
+              key={station.id} // Ensure this key is unique
+              className={`${
+                index % 2 === 0
+                  ? "bg-gray-800 dark:bg-gray-900"
+                  : "bg-gray-200 dark:bg-gray-700"
+              } border-b dark:border-gray-700 hover:bg-gray-600`}
+            >
+              {filterCol.map((key, idx) => (
+                <td key={idx} className="px-6 py-4">
+                  {station[key]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="flex items-center justify-between mt-4">
+        <button
+          type="button"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+        >
+          Previous
+        </button>
+        <span className="text-sm font-medium">
+          Page {currentPage} of {totalPages} | Total Stations:{" "}
+          {dataStations.length}
+        </span>
+        <button
+          type="button"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+        >
+          Next
+        </button>
       </div>
-    </ThemeProvider>
+    </div>
   );
 }

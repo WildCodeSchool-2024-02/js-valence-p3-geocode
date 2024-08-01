@@ -37,7 +37,8 @@
     "husky": "^9.0.11",
     "jsonwebtoken": "^9.0.2",
     "lint-staged": "^15.2.2",
-    "validate-branch-name": "^1.3.0"
+    "validate-branch-name": "^1.3.0",
+    "vite": "^5.3.5"
   },
   "dependencies": {
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",

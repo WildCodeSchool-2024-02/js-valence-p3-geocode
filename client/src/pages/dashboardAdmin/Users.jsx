@@ -1,4 +1,4 @@
-import TableDataUsers from "../../components/TableData/TableDataUsersBackUp";
+import TableDataUsers from "../../components/TableData/TableDataUsers";
 
 export default function Users() {
   return (
